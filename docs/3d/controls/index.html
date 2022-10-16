@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>SimulCity</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="title" content="SimulCity" />
+		<meta name="description" content="Collabrative Todos, designed to make group planning easy!" />
+
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://elijahstorm.github.io/wikirace/" />
+		<meta property="og:title" content="SimulCity" />
+		<meta
+			property="og:description"
+			content="Collabrative Todos, designed to make group planning easy!"
+		/>
+		<meta property="og:image" content="https://elijahstorm.github.io/wikirace/logo/logo_main.png" />
+
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content="https://elijahstorm.github.io/wikirace/" />
+		<meta property="twitter:title" content="SimulCity" />
+		<meta
+			property="twitter:description"
+			content="Collabrative Todos, designed to make group planning easy!"
+		/>
+		<meta
+			property="twitter:image"
+			content="https://elijahstorm.github.io/wikirace/logo/logo_main.png"
+		/>
+
+		<link rel="icon" href="/wikirace/favicon.png" />
+		<meta name="viewport" content="width=device-width" />
+		<meta http-equiv="content-security-policy" content="" />
+		<link href="/wikirace/_app/immutable/assets/_layout-079aa438.css" rel="stylesheet" />
+		<link href="/wikirace/_app/immutable/assets/GuiControls-27664c79.css" rel="stylesheet" />
+		<link href="/wikirace/_app/immutable/assets/WorldViewer-87974012.css" rel="stylesheet" />
+		<link href="/wikirace/_app/immutable/assets/index-2388fa67.css" rel="stylesheet" />
+		<link rel="modulepreload" href="/wikirace/_app/immutable/start-ece7d5d5.js" />
+		<link rel="modulepreload" href="/wikirace/_app/immutable/chunks/index-e3a647de.js" />
+		<link rel="modulepreload" href="/wikirace/_app/immutable/chunks/singletons-1200ce7a.js" />
+		<link rel="modulepreload" href="/wikirace/_app/immutable/chunks/paths-c8912ef8.js" />
+		<link
+			rel="modulepreload"
+			href="/wikirace/_app/immutable/components/pages/_layout.svelte-6fdc8439.js"
+		/>
+		<link rel="modulepreload" href="/wikirace/_app/immutable/chunks/navigation-777b9405.js" />
+		<link rel="modulepreload" href="/wikirace/_app/immutable/chunks/index-320460e1.js" />
+		<link rel="modulepreload" href="/wikirace/_app/immutable/chunks/stores-89bda170.js" />
+		<link
+			rel="modulepreload"
+			href="/wikirace/_app/immutable/modules/pages/_layout.ts-bea7bd81.js"
+		/>
+		<link rel="modulepreload" href="/wikirace/_app/immutable/chunks/_layout-26cd314b.js" />
+		<link
+			rel="modulepreload"
+			href="/wikirace/_app/immutable/components/pages/3d/controls/_page.svelte-d4e0d964.js"
+		/>
+		<link rel="modulepreload" href="/wikirace/_app/immutable/chunks/GuiControls-a899e3be.js" />
+		<link rel="modulepreload" href="/wikirace/_app/immutable/chunks/Engine-f3cf9186.js" />
+		<link rel="modulepreload" href="/wikirace/_app/immutable/chunks/WorldViewer-5afae3cc.js" />
+		<link rel="modulepreload" href="/wikirace/_app/immutable/chunks/index-6b10de05.js" />
+		<link rel="stylesheet" href="/wikirace/app.css" data-svelte="svelte-1jb9iai" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" data-svelte="svelte-1jb9iai" />
+		<link
+			rel="preconnect"
+			href="https://fonts.gstatic.com"
+			crossorigin=""
+			data-svelte="svelte-1jb9iai"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;500;700;900&family=Roboto:ital,wght@0,100;0,300;0,500;0,700;0,900;1,500&display=swap"
+			rel="stylesheet"
+			data-svelte="svelte-1jb9iai"
+		/>
+	</head>
+	<body>
+		<div>
+			<div class="wrapper svelte-12o3lt9"><canvas class="svelte-o3oskp"> </canvas></div>
+
+			<section class="svelte-j97pt3"></section>
+
+			<section class="svelte-j97pt3">
+				<p class="header svelte-j97pt3">master</p>
+				<div class="svelte-j97pt3">
+					<p>gridSize:</p>
+					<input
+						value="5"
+						type="number"
+						where="master"
+						min="2"
+						max="100"
+						step="1"
+						class="svelte-j97pt3"
+					/>
+				</div>
+				<div class="svelte-j97pt3">
+					<p>carAmount:</p>
+					<input
+						value="20"
+						type="number"
+						where="master"
+						min="2"
+						max="1000"
+						step="10"
+						class="svelte-j97pt3"
+					/>
+				</div>
+				<hr class="svelte-j97pt3" />
+				<p class="header svelte-j97pt3">brain</p>
+				<div class="svelte-j97pt3">
+					<p>sensorCount:</p>
+					<input
+						value="5"
+						type="number"
+						where="brain"
+						min="1"
+						max="30"
+						step="1"
+						class="svelte-j97pt3"
+					/>
+				</div>
+				<div class="svelte-j97pt3">
+					<p>sensorLength:</p>
+					<input
+						value="200"
+						type="number"
+						where="brain"
+						min="60"
+						max="300"
+						step="20"
+						class="svelte-j97pt3"
+					/>
+				</div>
+				<div class="svelte-j97pt3">
+					<p>sensorSpread:</p>
+					<input
+						value="1.5707963267948966"
+						type="number"
+						where="brain"
+						min="0"
+						max="3.141592653589793"
+						step="0.3"
+						class="svelte-j97pt3"
+					/>
+				</div>
+				<div class="svelte-j97pt3">
+					<p>minFitness:</p>
+					<input
+						value="-400"
+						type="number"
+						where="brain"
+						min="-3000"
+						max="0"
+						step="50"
+						class="svelte-j97pt3"
+					/>
+				</div>
+				<hr class="svelte-j97pt3" />
+				<p class="header svelte-j97pt3">controls</p>
+				<div class="svelte-j97pt3">
+					<p>showNetwork:</p>
+					<input value checked type="checkbox" where="controls" class="svelte-j97pt3" />
+				</div>
+				<div class="svelte-j97pt3">
+					<p>cameraFocus:</p>
+					<input
+						value="0"
+						type="number"
+						where="controls"
+						min="0"
+						max="19"
+						step="1"
+						class="svelte-j97pt3"
+					/>
+				</div>
+				<div class="svelte-j97pt3">
+					<p>playerControls:</p>
+					<input value="false" type="checkbox" where="controls" class="svelte-j97pt3" />
+				</div>
+				<div class="svelte-j97pt3">
+					<p>drawSensors:</p>
+					<input value="false" type="checkbox" where="controls" class="svelte-j97pt3" />
+				</div>
+				<div class="svelte-j97pt3">
+					<p>cameraSpeed:</p>
+					<input
+						value="0.06"
+						type="number"
+						where="controls"
+						min="0"
+						max="0.15"
+						step="0.001"
+						class="svelte-j97pt3"
+					/>
+				</div>
+				<div class="svelte-j97pt3">
+					<p>carThrust:</p>
+					<input
+						value="2"
+						type="number"
+						where="controls"
+						min="1"
+						max="15"
+						step="1"
+						class="svelte-j97pt3"
+					/>
+				</div>
+				<div class="svelte-j97pt3">
+					<p>maxSpeed:</p>
+					<input
+						value="8"
+						type="number"
+						where="controls"
+						min="3"
+						max="20"
+						step="1"
+						class="svelte-j97pt3"
+					/>
+				</div>
+				<div class="svelte-j97pt3">
+					<p>carTurnSpeed:</p>
+					<input
+						value="0.5"
+						type="number"
+						where="controls"
+						min="0.3"
+						max="1.5"
+						step="0.1"
+						class="svelte-j97pt3"
+					/>
+				</div>
+				<div class="svelte-j97pt3">
+					<p>carBreakStrength:</p>
+					<input
+						value="0.4"
+						type="number"
+						where="controls"
+						min="0.05"
+						max="0.3"
+						step="0.05"
+						class="svelte-j97pt3"
+					/>
+				</div>
+				<div class="svelte-j97pt3">
+					<p>friction:</p>
+					<input
+						value="0.04"
+						type="number"
+						where="controls"
+						min="0.01"
+						max="1"
+						step="0.01"
+						class="svelte-j97pt3"
+					/>
+				</div>
+				<hr class="svelte-j97pt3" />
+			</section>
+
+			<section class="svelte-9y2py3">
+				<div class="burger svelte-9y2py3">
+					<button class="svelte-hlfn2z">
+						<span class="burger burger-swipe svelte-5uaf2z isClosed"></span>
+					</button>
+				</div>
+			</section>
+
+			<script type="module" data-sveltekit-hydrate="19373fi">
+				import { start } from '/wikirace/_app/immutable/start-ece7d5d5.js'
+
+				start({
+					env: {},
+					hydrate: {
+						status: 200,
+						error: null,
+						node_ids: [0, 6],
+						params: {},
+						routeId: '3d/controls',
+						data: (function (a) {
+							return [a, a]
+						})(null),
+						form: null
+					},
+					paths: { base: '/wikirace', assets: '/wikirace' },
+					target: document.querySelector('[data-sveltekit-hydrate="19373fi"]').parentNode,
+					trailing_slash: 'always'
+				})
+			</script>
+		</div>
+	</body>
+</html>

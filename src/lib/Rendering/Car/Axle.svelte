@@ -1,0 +1,61 @@
+<script lang="ts">
+	import type {
+		RevoluteImpulseJoint,
+		RigidBody as RapierRigidBody
+	} from '@dimforge/rapier3d-compat'
+	import { Group, type Position } from '@threlte/core'
+	import { Collider, RigidBody, useFixedJoint, useRevoluteJoint } from '@threlte/rapier'
+	import { spring } from 'svelte/motion'
+	import type { Readable } from 'svelte/store'
+	import type { BufferGeometry, Material } from 'three'
+	import { clamp, DEG2RAD, mapLinear } from 'three/src/math/MathUtils'
+	import { useCar } from './Car.svelte'
+	import Wheel from './Wheel.svelte'
+
+	export let position: Position | undefined = undefined
+	export let parentRigidBody: RapierRigidBody | undefined = undefined
+	export let anchor: Position
+	export let isSteered: boolean = false
+	export let isDriven: boolean = false
+	export let side: 'left' | 'right'
+	export let geometry: BufferGeometry | undefined = undefined
+	export let material: Material | Material[] | undefined = undefined
+	export let movement: Readable<MovementController>
+
+	let axleRigidBody: RapierRigidBody
+
+	const { speed } = useCar()
+
+	const steeringAngle = spring(mapLinear(clamp($speed / 12, 0, 1), 0, 1, 1, 0.5) * $movement.x * 15)
+	$: steeringAngle.set(mapLinear(clamp($speed / 12, 0, 1), 0, 1, 1, 0.5) * $movement.x * 15)
+
+	const { joint, rigidBodyA, rigidBodyB } = isSteered
+		? useRevoluteJoint(anchor, {}, { y: 1 })
+		: useFixedJoint(anchor, {}, {}, {})
+	$: if (parentRigidBody) rigidBodyA.set(parentRigidBody)
+	$: if (axleRigidBody) rigidBodyB.set(axleRigidBody)
+	$: $joint?.setContactsEnabled(false)
+	$: if (isSteered) {
+		;($joint as RevoluteImpulseJoint)?.configureMotorPosition(
+			$steeringAngle * -1 * DEG2RAD,
+			1000000,
+			0
+		)
+	}
+</script>
+
+<Group {position}>
+	<RigidBody bind:rigidBody={axleRigidBody}>
+		<Collider mass={1} shape={'cuboid'} args={[0.03, 0.03, 0.03]} />
+	</RigidBody>
+
+	<Wheel
+		{geometry}
+		{material}
+		{isDriven}
+		{movement}
+		anchor={{ z: side === 'left' ? 0.2 : -0.2 }}
+		position={{ z: side === 'left' ? 0.2 : -0.2 }}
+		parentRigidBody={axleRigidBody}
+	/>
+</Group>

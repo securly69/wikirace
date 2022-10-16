@@ -1,0 +1,11 @@
+Model Information:
+* title:	1981 Baird Paella
+* source:	https://sketchfab.com/3d-models/1981-baird-paella-19c74156acc04f66a184f7c9756f3b4a
+* author:	Andrew Duong (https://sketchfab.com/aduong278)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "1981 Baird Paella" (https://sketchfab.com/3d-models/1981-baird-paella-19c74156acc04f66a184f7c9756f3b4a) by Andrew Duong (https://sketchfab.com/aduong278) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
