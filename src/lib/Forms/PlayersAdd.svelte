@@ -10,8 +10,6 @@
 	let clipboard: any
 	let gameLink: string
 
-	// subscribe to firebase
-
 	$: gameLink = `${$page.url.toString().split(base)[0]}${base}/game/${$game.id}`
 
 	const share = () => {

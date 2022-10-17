@@ -1,4 +1,4 @@
-import "./firebase"
+import './firebase'
 import {
 	getFirestore,
 	addDoc,
@@ -15,29 +15,33 @@ import {
 	serverTimestamp,
 	setDoc,
 	where,
+	deleteDoc,
+	CollectionReference,
 	type DocumentData,
 	type WhereFilterOp,
-	deleteDoc
-} from "firebase/firestore"
-import type { SendContentConfig } from "$lib/content/Content"
-import { firebaseApp } from "./firebase"
-import { pipe } from "$lib/utils"
+	type SetOptions,
+	Query,
+} from 'firebase/firestore'
+import { firebaseApp } from './firebase'
+import { pipe } from '$lib/fp-ts'
+
+
+type Location = DocumentReference<DocumentData> | CollectionReference<DocumentData> | Query<DocumentData>
+type LocationContent = {
+	location: Location
+	content: DocumentData
+}
+type PossibleConnections = typeof doc | typeof collection 
 
 const db = getFirestore(firebaseApp)
 
-export type StoreLocation = {
-	id?: string
-	source?: string
-	isTeam?: boolean
-	type?: string
-}
-export const api: (data: StoreLocation) => () => string = ({
+export const api: (data: StoreLocation) => string = ({
 	source = null,
 	isTeam = false,
 	type = null,
 	id = null
-}) => {
-	let api = isTeam ? "teams" : "users"
+}): string => {
+	let api = isTeam ? 'teams' : 'users'
 
 	if (source != null && type != null) {
 		api += `/${source}/${type}`
@@ -47,12 +51,12 @@ export const api: (data: StoreLocation) => () => string = ({
 		api += `/${id}`
 	}
 
-	return () => api
+	return api
 }
 
-const connect = (store) => (api: string) => store(db, api)
+const connect = <T extends PossibleConnections>(store: T) => (api: string) => store(db, api)
 
-const clense = (content, timestamp) => (location) => {
+const clense = (content: DocumentData, timestamp: string) => (location: Location) => {
 	delete content.id
 	delete content.contentType
 	content[timestamp] = serverTimestamp()
@@ -63,9 +67,10 @@ const clense = (content, timestamp) => (location) => {
 	}
 }
 
+
 const upload =
-	(protocol, options = null) =>
-	(data) =>
+	(protocol: typeof addDoc | typeof setDoc, options: SetOptions | null = null) =>
+	(data: LocationContent) =>
 		protocol(data.location, data.content, options)
 
 export const getDocument: (data: StoreLocation) => Promise<DocumentSnapshot<DocumentData>> = ({
@@ -73,29 +78,30 @@ export const getDocument: (data: StoreLocation) => Promise<DocumentSnapshot<Docu
 	isTeam = false,
 	type = null,
 	id
-}) => pipe(api({ source, isTeam, type, id }), connect(doc), getDoc)
+}) => pipe({ source, isTeam, type, id }, api, connect(doc), getDoc)
 
-export const deleteDocument: (data: StoreLocation) => Promise<DocumentSnapshot<DocumentData>> = ({
+export const deleteDocument: (data: StoreLocation) => Promise<void> = ({
 	source = null,
 	isTeam = false,
 	type = null,
 	id
-}) => pipe(api({ source, isTeam, type, id }), connect(doc), deleteDoc)
+}) => pipe({ source, isTeam, type, id }, api, connect(doc), deleteDoc)
 
 export const uploadDocument: (
 	data: StoreLocation & {
-		content: SendContentConfig
+		content: DocumentData
 		timestamp?: string
 	}
-) => Promise<DocumentReference<DocumentData>> = ({
+) => Promise<void | DocumentReference<DocumentData>> = ({
 	content,
 	source = null,
 	type = null,
 	isTeam = false,
-	timestamp = "created"
+	timestamp = 'created'
 }) =>
 	pipe(
-		api({ source, type, isTeam }),
+		{ source, type, isTeam },
+		api,
 		connect(collection),
 		clense(content, timestamp),
 		upload(addDoc)
@@ -103,19 +109,20 @@ export const uploadDocument: (
 
 export const updateDocument: (
 	data: StoreLocation & {
-		content: SendContentConfig
+		content: DocumentData
 		timestamp?: string
 	}
-) => Promise<void> = ({
+) => Promise<void | DocumentReference<DocumentData>> = ({
 	id,
 	content,
 	source = null,
 	type = null,
 	isTeam = false,
-	timestamp = "edited"
+	timestamp = 'edited'
 }) =>
 	pipe(
-		api({ source, type, isTeam, id }),
+		{ source, type, isTeam, id },
+		api,
 		connect(doc),
 		clense(content, timestamp),
 		upload(setDoc, { merge: true })
@@ -136,17 +143,18 @@ export const storeQuery: (
 	isTeam = false,
 	type = null,
 	amount = 50,
-	timestamp = "date",
+	timestamp = 'date',
 	queries
 }) =>
 	pipe(
-		api({ source, isTeam, type }),
+		{ source, isTeam, type },
+		api,
 		connect(collection),
 		(reference) =>
 			query(
 				reference,
 				...queries.map((query) => where(query.type, query.compare, query.value)),
-				orderBy(timestamp, "desc"),
+				orderBy(timestamp, 'desc'),
 				limit(amount)
 			),
 		getDocs

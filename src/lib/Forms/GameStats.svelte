@@ -16,7 +16,7 @@
 				!value || value === ''
 					? null
 					: fetch(
-							`https://en.wikipedia.org/w/api.php?&origin=*&action=query&format=json&list=search&srsearch=${value}`
+							`https://en.wikipedia.org/w/api.php?&origin=*&action=query&format=json&list=search&srsearch=${value.trim()}`
 					  )
 							.then((resp) => resp.json())
 							.then((json) => (searchResults = json?.query?.search)),

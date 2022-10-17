@@ -1,6 +1,12 @@
 <script lang="ts">
 	import type { PageData } from './$types'
 	import { game, players } from '$lib/stores'
+	import { onMount } from 'svelte'
+	import { browser } from '$app/environment'
+	import { goto } from '$app/navigation'
+	import { base } from '$app/paths'
+	import LinkParser from '$lib/Race/LinkParser.svelte'
+	// import SocketMessages from '$lib/Race/SocketMessages.svelte'
 
 	export let data: PageData
 
@@ -10,20 +16,37 @@
 	const localStoragePlayers = 'wikiRacePlayers'
 	const localStorageGame = 'wikiRaceGame'
 
+	let mounted = false
 	let dataPlayers = $players
 	let dataGame = $game
+	$: dataPlayers = $players
+	$: dataGame = $game
 
-	if (dataPlayers.length === 0 || dataGame.route.length < 2) {
-		dataPlayers = JSON.parse(localStorage.getItem(localStoragePlayers) ?? '[]')
-		dataGame = JSON.parse(localStorage.getItem(localStorageGame) ?? '{"route":[]}')
-	}
+	onMount(() => {
+		mounted = true
+	})
 
-	if (dataPlayers.length === 0 || dataGame.route.length < 2) {
-		//load from firestore
-	}
+	$: {
+		if (mounted) {
+			if (dataPlayers.length === 0 || dataGame.route.length < 2) {
+				dataPlayers = JSON.parse(localStorage.getItem(localStoragePlayers) ?? '[]')
+				dataGame = JSON.parse(localStorage.getItem(localStorageGame) ?? '{"route":[]}')
+			}
 
-	if (dataPlayers.length === 0 || dataGame.route.length < 2) {
-		// throw redirect(307, base)
+			if (dataPlayers.length === 0 || dataGame.route.length < 2) {
+				//load from firestore
+			}
+
+			if (dataPlayers.length === 0 || dataGame.route.length < 2) {
+				if (browser) goto(base)
+			} else {
+				$players = dataPlayers
+				$game = dataGame
+				localStorage.setItem(localStoragePlayers, JSON.stringify($players))
+				localStorage.setItem(localStorageGame, JSON.stringify($game))
+				//set to firestore
+			}
+		}
 	}
 </script>
 
@@ -31,9 +54,10 @@
 	<h1 id="firstHeading" class="firstHeading mw-first-heading">
 		<span class="mw-page-title-main">{title ?? '[error]: missing title'}</span>
 	</h1>
-	{@html html}
+	<LinkParser {html} />
 </section>
 
+<!-- <SocketMessages /> -->
 <style>
 	:global(body) {
 		overflow-y: hidden !important;

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { base } from '$app/paths'
 	import { page } from '$app/stores'
-	import { players, game } from '$lib/stores'
+	import { players, game, me } from '$lib/stores'
 	import CopyToClipboard from '$lib/UI/Widgets/CopyToClipboard.svelte'
 	import DataInput from '$lib/UI/Widgets/DataInput.svelte'
 	import Icon from '@iconify/svelte'
@@ -73,22 +73,21 @@
 	const save = () => {
 		if (!nameValue || nameValue === '') return
 
-		$players = [
-			...$players,
-			{
-				name: nameValue,
-				uid: '',
-				color: chosenColor,
-				score: 0,
-				progress: {
-					linkHistory: [],
-					linksProgressed: 0,
-					backNavs: 0,
-					isCriticallyClose: false,
-					timesCriticallyClose: 0
-				}
+		$me = {
+			name: nameValue.trim(),
+			uid: '',
+			color: chosenColor,
+			score: 0,
+			progress: {
+				linkHistory: [],
+				linksProgressed: 0,
+				backNavs: 0,
+				isCriticallyClose: false,
+				timesCriticallyClose: 0
 			}
-		]
+		}
+
+		$players = [...$players, $me]
 	}
 </script>
 
