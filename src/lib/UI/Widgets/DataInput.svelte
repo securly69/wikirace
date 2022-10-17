@@ -3,27 +3,34 @@
 	export let name: string
 	export let id: string
 	export let type: string
-	export let icon: string = ""
+	export let icon: string = ''
 
 	export let required: boolean = false
 	export let attempted: boolean = false
 
+	export let value = ''
+
 	$: iconHref = `background: url(${icon}); background-size: 1.5rem auto; background-repeat: repeat;`
+
+	const change = (input: InputEvent) => {
+		value = input.target?.value ?? ''
+	}
 </script>
 
 <div class="input-container">
 	<label for={name}>{text}</label>
-	{#if icon != ""}
+	{#if icon != ''}
 		<div class="input-icon icon-username" style={iconHref} />
 	{/if}
 	<input
-		class:push={icon != ""}
+		class:push={icon != ''}
 		class:attempted
 		{id}
 		{name}
 		placeholder={text}
 		{type}
 		{required}
+		on:input={change}
 	/>
 </div>
 
@@ -41,7 +48,7 @@
 		height: 1.5rem;
 	}
 	.input-icon::after {
-		content: "";
+		content: '';
 		position: absolute;
 		right: -11px;
 		top: -10px;

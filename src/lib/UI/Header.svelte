@@ -14,7 +14,8 @@
 		<BackButton />
 	{/if}
 	<a href={base + logoLink}>
-		<img src={logo} alt="HAJA" />
+		<h2>WikiRace</h2>
+		<!-- <img src={logo} alt="HAJA" /> -->
 	</a>
 	<div class="center" />
 </div>
@@ -24,7 +25,10 @@
 		display: flex;
 		flex-direction: horizontal;
 	}
-	img {
+	a {
+		color: #3796e4;
+		font-size: 1.1rem;
+		text-decoration: none;
 		max-width: 120px;
 		cursor: pointer;
 	}

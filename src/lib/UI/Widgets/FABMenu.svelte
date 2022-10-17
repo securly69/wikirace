@@ -3,13 +3,70 @@
 	import { goto } from '$app/navigation'
 	import Burger from '$lib/UI/Widgets/Burger.svelte'
 	import GlassyButton from '$lib/UI/Widgets/GlassyButton.svelte'
-	import { fade, fly } from 'svelte/transition'
+	import { fly } from 'svelte/transition'
 	import { base } from '$app/paths'
-	import { page } from '$app/stores'
+	import { players } from '$lib/stores'
 
 	const baseButtons = [
 		{
-			text: 'Go back to introduction',
+			text: 'Add new player',
+			action: () => {
+				$players = [
+					...$players,
+					{
+						uid: '325',
+						name: 'player hi',
+						color: '#f00',
+						score: 5,
+						progress: {
+							linkHistory: [
+								{
+									type: 'url',
+									url: 'there',
+									index: 0
+								},
+								{
+									type: 'url',
+									url: 'there2',
+									index: 1
+								},
+								{
+									type: 'back',
+									url: 'there',
+									index: 2
+								},
+								{
+									type: 'url',
+									url: 'there3',
+									index: 3
+								},
+								{
+									type: 'url',
+									url: 'there4',
+									index: 4
+								},
+								{
+									type: 'back',
+									url: 'there3',
+									index: 5
+								},
+								{
+									type: 'url',
+									url: 'there5',
+									index: 6
+								}
+							],
+							linksProgressed: 7,
+							backNavs: 2,
+							isCriticallyClose: false,
+							timesCriticallyClose: 2
+						}
+					}
+				]
+			}
+		},
+		{
+			text: 'Go back main menu',
 			action: () => {
 				if (browser) goto(base)
 			}
@@ -25,49 +82,9 @@
 	let isClosed = true
 	let buttons = baseButtons
 
-	$: Controls = {
-		add: {
-			text: 'View with controls',
-			action: () => {
-				if (browser) goto(`${base}/${$page.routeId}/controls`)
-			}
-		},
-		remove: {
-			text: 'Turn off controls',
-			action: () => {
-				if (browser) goto(`${base}/${$page.routeId?.replace('/controls', '')}`)
-			}
-		}
-	}
-
-	$: RenderStyle = {
-		twoDim: {
-			text: 'Show in TopDown simple style',
-			action: () => {
-				if (browser) goto(`${base}/${$page.routeId?.replace('3d', '2d')}`)
-			}
-		},
-		threeDim: {
-			text: 'Render in 3D',
-			action: () => {
-				if (browser) goto(`${base}/${$page.routeId?.replace('2d', '3d')}`)
-			}
-		}
-	}
-
 	$: {
 		isClosed
 		buttons = baseButtons.slice()
-		if ($page.routeId?.includes('3d')) {
-			buttons.push(RenderStyle.twoDim)
-		} else {
-			buttons.push(RenderStyle.threeDim)
-		}
-		if ($page.routeId?.includes('controls')) {
-			buttons.push(Controls.remove)
-		} else {
-			buttons.push(Controls.add)
-		}
 	}
 
 	const perform = (action: VoidFunction) => {
@@ -78,31 +95,26 @@
 	const toggle = () => (isClosed = !isClosed)
 </script>
 
-{#if $page.routeId != ''}
-	<section in:fade out:fade>
-		<div class="burger">
-			<GlassyButton callback={toggle}>
-				<Burger open={!isClosed} />
-			</GlassyButton>
-		</div>
+<div class="nav">
+	<div class="burger">
+		<GlassyButton callback={toggle}>
+			<Burger open={!isClosed} />
+		</GlassyButton>
+	</div>
 
-		{#if !isClosed}
-			{#each buttons as button, index}
-				<div
-					in:fly={{ y: -100, delay: 40 * index }}
-					out:fly={{ y: -100, x: 100, delay: 20 * index }}
-				>
-					<GlassyButton callback={() => perform(button.action)}>{button.text}</GlassyButton>
-				</div>
-			{/each}
-		{/if}
-	</section>
-{/if}
+	{#if !isClosed}
+		{#each buttons as button, index}
+			<div in:fly={{ y: -100, delay: 40 * index }} out:fly={{ y: -100, x: 100, delay: 20 * index }}>
+				<GlassyButton callback={() => perform(button.action)}>{button.text}</GlassyButton>
+			</div>
+		{/each}
+	{/if}
+</div>
 
 <style>
-	section {
-		position: fixed;
-		top: 1rem;
+	.nav {
+		position: absolute;
+		top: 0.75rem;
 		right: 1rem;
 		display: flex;
 		flex-direction: column;

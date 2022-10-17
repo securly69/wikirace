@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { base } from '$app/paths'
-	import FabMenu from '$lib/UI/Widgets/FABMenu.svelte'
 	import Loader from '$lib/UI/Widgets/Loader.svelte'
+	import { Toasts } from 'as-toast'
 	import { navigating } from '$app/stores'
 </script>
 
@@ -25,7 +25,7 @@
 	</div>
 {/if}
 
-<FabMenu />
+<Toasts />
 
 <style>
 	div {
