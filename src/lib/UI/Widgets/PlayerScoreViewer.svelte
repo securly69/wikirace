@@ -40,7 +40,6 @@
 		gap: 1rem;
 		user-select: none;
 		min-height: 2rem;
-		max-height: 2rem;
 		align-items: stretch;
 	}
 

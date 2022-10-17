@@ -23,7 +23,6 @@
 		width: 100%;
 		max-width: 900px;
 		padding: 32px 32px 64px 32px;
-		overflow: hidden;
 		word-wrap: break-word;
 	}
 	.padding-bottom {

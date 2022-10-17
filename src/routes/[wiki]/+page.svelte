@@ -1,10 +1,30 @@
 <script lang="ts">
 	import type { PageData } from './$types'
+	import { game, players } from '$lib/stores'
 
 	export let data: PageData
 
-	let { html, title, pageid, revid, categories, links, parsewarnings } = data
-	$: ({ html, title, pageid, revid, categories, links, parsewarnings } = data)
+	let { html, title } = data
+	$: ({ html, title } = data)
+
+	const localStoragePlayers = 'wikiRacePlayers'
+	const localStorageGame = 'wikiRaceGame'
+
+	let dataPlayers = $players
+	let dataGame = $game
+
+	if (dataPlayers.length === 0 || dataGame.route.length < 2) {
+		dataPlayers = JSON.parse(localStorage.getItem(localStoragePlayers) ?? '[]')
+		dataGame = JSON.parse(localStorage.getItem(localStorageGame) ?? '{"route":[]}')
+	}
+
+	if (dataPlayers.length === 0 || dataGame.route.length < 2) {
+		//load from firestore
+	}
+
+	if (dataPlayers.length === 0 || dataGame.route.length < 2) {
+		// throw redirect(307, base)
+	}
 </script>
 
 <section>

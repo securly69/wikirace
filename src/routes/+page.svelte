@@ -53,24 +53,26 @@
 
 	.login,
 	.maintain-position {
-		position: relative;
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
 	}
 
 	.carousel {
+		position: relative;
 		display: flex;
 		max-width: 100%;
-		overflow: clip;
+		overflow-x: clip;
 	}
 
 	.carousel > * {
 		flex: 1;
 		min-width: 100%;
+		padding-bottom: 3rem;
 	}
 
 	.maintain-position {
 		position: absolute;
+		background: linear-gradient(0, transparent, var(--bg), var(--bg));
 	}
 </style>

@@ -78,7 +78,7 @@
 			{
 				name: nameValue,
 				uid: '',
-				color: '#fbb',
+				color: chosenColor,
 				score: 0,
 				progress: {
 					linkHistory: [],

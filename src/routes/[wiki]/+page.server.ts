@@ -5,16 +5,8 @@ import { base } from '$app/paths'
 
 const wiki = 'https://en.wikipedia.org/w/api.php?action=parse&format=json&page='
 
-export const load: PageServerLoad = async ({ params, locals }) => {
+export const load: PageServerLoad = async ({ params }) => {
 	const prefilteredData = await fetch(`${wiki}${params.wiki ?? 'Main_page'}`)
-
-	// fetch player store
-	// 1) download current state from Firebase
-	// 2) request assets from relevant state
-	// 3) add gamestate to local store here
-	// 4) send out HTML
-
-	// if (locals.player)
 
 	let html = pipe(await prefilteredData.json(), JSON.stringify, JSON.parse)
 	let parsed = html?.parse

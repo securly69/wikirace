@@ -2,21 +2,27 @@
 	import { game } from '$lib/stores'
 	import DataInput from '$lib/UI/Widgets/DataInput.svelte'
 	import Icon from '@iconify/svelte'
-	import { fly } from 'svelte/transition'
+	import { fade } from 'svelte/transition'
 
 	let value: string
 	let shouldShakeInput = false
 
-	let searchList = {}
+	let searchResults: { title: string; pageid: number; snippet: string }[] = []
 
-	// https://en.wikipedia.org/w/api.php?action=parse&format=json&page='
-	$: debounce(
-		() =>
-			fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${value}`)
-				.then((resp) => resp.json())
-				.then((json) => (searchList = json)),
-		500
-	)
+	$: {
+		searchResults = []
+		debounce(
+			() =>
+				!value || value === ''
+					? null
+					: fetch(
+							`https://en.wikipedia.org/w/api.php?&origin=*&action=query&format=json&list=search&srsearch=${value}`
+					  )
+							.then((resp) => resp.json())
+							.then((json) => (searchResults = json?.query?.search)),
+			500
+		)
+	}
 
 	let timer: string | number | NodeJS.Timeout | undefined
 	const debounce = (fnc: Function, time: number) => {
@@ -24,10 +30,6 @@
 		timer = setTimeout(() => {
 			fnc()
 		}, time)
-	}
-
-	$: {
-		console.log({ searchList })
 	}
 
 	const shakeNo = async () => {
@@ -38,7 +40,9 @@
 		shouldShakeInput = false
 	}
 
-	const addRoute = (dest: string) => () => {
+	const addRoute = (index: number) => () => {
+		const dest = searchResults[index].title
+
 		if (!dest || dest === '') {
 			shakeNo()
 			return
@@ -50,19 +54,23 @@
 		}
 
 		$game = { ...$game, route: [...$game.route, dest] }
+		searchResults = []
 	}
 
-	const removeFromRoute = (dest: string) => () => {
-		const index = $game.route.indexOf(dest)
-
-		if (index === -1) return
-
+	const removeFromRoute = (index: number) => () => {
 		$game.route.splice(index, 1)
 		$game = { ...$game, route: [...$game.route] }
 	}
 
 	const finish = () => {
-		$game = { ...$game, id: 'test', ready: true }
+		if ($game.route.length < 2) return
+
+		$game = {
+			...$game,
+			route: $game.route.map((r) => r.replaceAll(' ', '_')),
+			id: 'test',
+			ready: true
+		}
 	}
 </script>
 
@@ -71,12 +79,12 @@
 {:else}
 	<div class="numbered-list">
 		{#each $game.route as route, index}
-			<div in:fly>
+			<div in:fade>
 				<span>
-					{index}. {route}
+					{index + 1}. {route}
 				</span>
 
-				<div on:click={removeFromRoute(route)}>
+				<div on:click={removeFromRoute(index)}>
 					<Icon color="red" icon="akar-icons:cross" />
 				</div>
 			</div>
@@ -87,7 +95,7 @@
 <div class:shake={shouldShakeInput}>
 	<DataInput
 		bind:value
-		text="Choose a next route"
+		text="Choose the next route"
 		name="route"
 		id="route"
 		type="route"
@@ -96,9 +104,13 @@
 	/>
 </div>
 
-<button class="button" on:click={addRoute(value)} on:keydown={addRoute(value)}>
-	+ Add Route
-</button>
+<div class="search-results" class:hidden={searchResults.length === 0}>
+	{#each searchResults as result, index}
+		<div on:click={addRoute(index)} on:keydown={addRoute(index)} in:fade>
+			{result.title}
+		</div>
+	{/each}
+</div>
 
 <button
 	class="button"
@@ -106,7 +118,7 @@
 	on:click={finish}
 	on:keydown={finish}
 >
-	Finish and start game
+	Finish Selection
 </button>
 
 <style>
@@ -126,6 +138,30 @@
 	.numbered-list > * {
 		display: flex;
 		justify-content: space-between;
+	}
+
+	.search-results {
+		translate: 0 -2rem;
+		display: flex;
+		flex-direction: column;
+		border-bottom-left-radius: 0.5rem;
+		border-bottom-right-radius: 0.5rem;
+		border-bottom: 1px solid var(--primary);
+		border-left: 1px solid var(--primary);
+		border-right: 1px solid var(--primary);
+		overflow: hidden;
+	}
+	.search-results.hidden {
+		display: none;
+	}
+	.search-results > div {
+		border-top: 1px solid var(--primary);
+		background-color: white;
+		cursor: pointer;
+		padding: 0.5rem 1rem;
+	}
+	.search-results > div:hover {
+		background-color: var(--primary);
 	}
 
 	.shake {
