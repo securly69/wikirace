@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { game, me } from '$lib/stores'
 	import { updateDocument } from '$lib/firebase/firestore'
-	import RouteViewer from '$lib/UI/Widgets/RouteViewer.svelte'
-	import PlayerScoreViewer from '$lib/UI/Widgets/PlayerScoreViewer.svelte'
+	import RouteViewer from '$lib/Race/RouteViewer.svelte'
+	import PlayerScoreViewer from '$lib/Race/PlayerScoreViewer.svelte'
 	import ShareLink from '$lib/UI/Widgets/ShareLink.svelte'
 
 	export let gameData: Game

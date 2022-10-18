@@ -59,6 +59,8 @@
 			}
 
 			if ((!currentGame.id || currentGame.id === '') && $me.gameId && $me.gameId !== '') {
+				console.log('getting info from firestore')
+
 				getDocument({
 					type: 'game',
 					id: $me.gameId
@@ -74,29 +76,27 @@
 				})
 			}
 
-			console.log('checking stuff gin', currentGame.state)
+			console.log('checking stuff gamestste ->', currentGame.state)
 
-			if (browser) {
-				if (currentGame.state === 'started') {
-					const linkHistory = currentGame.players.find((player) => $me.uid === player.uid)?.progress
-						.linkHistory
+			if (browser && currentGame.state === 'started') {
+				const linkHistory = currentGame.players.find((player) => $me.uid === player.uid)?.progress
+					.linkHistory
 
-					console.log(
-						'curret player',
-						currentGame.players.find((player) => $me.uid === player.uid)
-					)
-					console.log(
-						'history ',
-						currentGame.players.find((player) => $me.uid === player.uid)?.progress.linkHistory
-					)
+				console.log(
+					'curret player',
+					currentGame.players.find((player) => $me.uid === player.uid)
+				)
+				console.log(
+					'history ',
+					currentGame.players.find((player) => $me.uid === player.uid)?.progress.linkHistory
+				)
 
-					if (linkHistory && linkHistory.length !== 0) {
-						const dest = linkHistory[linkHistory.length - 1].url
+				if (linkHistory && linkHistory.length !== 0) {
+					const dest = linkHistory[linkHistory.length - 1].url
 
-						console.log($page.routeId, !$page.routeId?.includes(dest))
+					console.log($page.routeId, !$page.routeId?.includes(dest))
 
-						if (!$page.routeId?.includes(dest)) goto(`${base}/${dest}`)
-					}
+					if (!$page.routeId?.includes(dest)) goto(`${base}/${dest}`)
 				}
 			}
 		}

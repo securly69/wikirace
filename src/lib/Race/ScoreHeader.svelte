@@ -2,7 +2,7 @@
 	import { fade } from 'svelte/transition'
 	import { game } from '$lib/stores'
 	import PlayerScoreViewer from './PlayerScoreViewer.svelte'
-	import FabMenu from './FABMenu.svelte'
+	import FabMenu from '../UI/Widgets/FABMenu.svelte'
 </script>
 
 <section in:fade out:fade>

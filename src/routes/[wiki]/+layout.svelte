@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { game } from '$lib/stores'
-	import RouteViewer from '$lib/UI/Widgets/RouteViewer.svelte'
-	import ScoreHeader from '$lib/UI/Widgets/ScoreHeader.svelte'
+	import RouteViewer from '$lib/Race/RouteViewer.svelte'
+	import ScoreHeader from '$lib/Race/ScoreHeader.svelte'
 </script>
 
 <svelte:head>

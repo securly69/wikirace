@@ -3,8 +3,8 @@
 	import { page } from '$app/stores'
 	import { updateDocument } from '$lib/firebase/firestore'
 	import { game } from '$lib/stores'
-	import PlayerScoreViewer from '$lib/UI/Widgets/PlayerScoreViewer.svelte'
-	import RouteViewer from '$lib/UI/Widgets/RouteViewer.svelte'
+	import PlayerScoreViewer from '$lib/Race/PlayerScoreViewer.svelte'
+	import RouteViewer from '$lib/Race/RouteViewer.svelte'
 	import ShareLink from '$lib/UI/Widgets/ShareLink.svelte'
 	import { fly } from 'svelte/transition'
 

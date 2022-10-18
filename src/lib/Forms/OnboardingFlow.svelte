@@ -10,6 +10,11 @@
 	import JoinExistingGame from './JoinExistingGame.svelte'
 
 	export let gameData: Game | null = null
+
+	$: {
+		console.log('age gracefully')
+		console.log('game', $game)
+	}
 </script>
 
 <Casing backBtn={false}>
@@ -72,7 +77,6 @@
 		position: relative;
 		display: flex;
 		max-width: 100%;
-		overflow-x: clip;
 	}
 
 	.carousel > * {

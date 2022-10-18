@@ -87,7 +87,7 @@
 			]
 		}
 
-		console.log($game)
+		console.log('game GS', $game)
 
 		uploadDocument({
 			type: 'game',
@@ -98,13 +98,6 @@
 			console.log('whao', id)
 
 			$game = { ...$game, id }
-
-			updateDocument({
-				type: 'game',
-				id: $game.id,
-				content: $game
-			})
-
 			$me = { ...$me, gameId: id }
 
 			updateDocument({

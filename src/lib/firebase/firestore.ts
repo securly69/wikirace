@@ -52,6 +52,8 @@ const clense = (content: DocumentData, timestamp: string) => (location: Location
 	delete content.contentType
 	content[timestamp] = serverTimestamp()
 
+	console.log('trying tp uploading', { content })
+
 	return {
 		location,
 		content
