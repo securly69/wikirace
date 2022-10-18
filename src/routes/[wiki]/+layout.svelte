@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { game } from '$lib/stores'
-	import RouteViewer from '$lib/Race/RouteViewer.svelte'
 	import ScoreHeader from '$lib/Race/ScoreHeader.svelte'
 </script>
 
@@ -16,8 +14,6 @@
 </svelte:head>
 
 <div class="no-scroll">
-	<RouteViewer route={$game.route} />
-
 	<ScoreHeader />
 
 	<div class="content">

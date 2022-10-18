@@ -12,16 +12,23 @@
 				{link}
 			</a>
 		{:else}
-			{link}
+			<span> {link} </span>
 		{/if}
 		{#if index !== route.length - 1}
-			->&nbsp;
+			→
 		{/if}
 	{/each}
 </p>
 
 <style>
 	p {
+		color: var(--text);
+		user-select: none;
+	}
+	span {
 		color: var(--primary);
+	}
+	a {
+		user-select: unset;
 	}
 </style>

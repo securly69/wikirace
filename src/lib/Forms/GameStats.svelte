@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { updateDocument, uploadDocument } from '$lib/firebase/firestore'
+	import { defaultProgressValue } from '$lib/Race/defaults'
 	import { game, me } from '$lib/stores'
 	import DataInput from '$lib/UI/Widgets/DataInput.svelte'
 	import Icon from '@iconify/svelte'
@@ -74,13 +75,7 @@
 			players: [
 				{
 					...$me,
-					progress: {
-						linkHistory: [],
-						linksProgressed: 0,
-						backNavs: 0,
-						isCriticallyClose: false,
-						timesCriticallyClose: 0
-					}
+					progress: defaultProgressValue
 				}
 			]
 		}

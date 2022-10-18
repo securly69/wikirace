@@ -1,11 +1,31 @@
 <script lang="ts">
 	import type { PageData } from './$types'
 	import LinkParser from '$lib/Race/LinkParser.svelte'
+	import { onMount } from 'svelte'
+	import { game, me } from '$lib/stores'
+	import { goto } from '$app/navigation'
+	import { base } from '$app/paths'
+	import { browser } from '$app/environment'
+	import { page } from '$app/stores'
 
 	export let data: PageData
 
 	let { html, title } = data
 	$: ({ html, title } = data)
+
+	onMount(() => {
+		if (browser && $me.uid == null) {
+			goto(base)
+			return
+		}
+
+		if (
+			$page.url.pathname.substring(base.length + 1).replaceAll('/', '') ===
+			$game.route[$game.route.length - 1]
+		) {
+			// call it a win state
+		}
+	})
 </script>
 
 <section>

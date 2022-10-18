@@ -3,6 +3,7 @@
 	import { game } from '$lib/stores'
 	import PlayerScoreViewer from './PlayerScoreViewer.svelte'
 	import FabMenu from '../UI/Widgets/FABMenu.svelte'
+	import RouteViewer from './RouteViewer.svelte'
 </script>
 
 <section in:fade out:fade>
@@ -10,6 +11,8 @@
 		{#each $game.players as player (player.uid)}
 			<PlayerScoreViewer {player} />
 		{/each}
+
+		<RouteViewer route={$game.route} />
 	</div>
 
 	<FabMenu />

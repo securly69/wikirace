@@ -24,7 +24,8 @@ import {
 	onSnapshot,
 	type Unsubscribe,
 	arrayUnion,
-	updateDoc
+	updateDoc,
+	arrayRemove
 } from 'firebase/firestore'
 import { firebaseApp } from './firebase'
 import { pipe } from '$lib/fp-ts'
@@ -105,11 +106,12 @@ export const updateDocument: (
 }) =>
 	pipe({ type, id }, api, connect(doc), clense(content, timestamp), upload(setDoc, { merge: true }))
 
-export const updateDocumentArray: (data: StoreLocation, key: string, what: unknown) => void = (
-	{ id, type },
-	key,
-	what: object
-) => {
+export const updateDocumentArray: (
+	data: StoreLocation,
+	key: string,
+	what: object,
+	remove?: boolean
+) => void = ({ id, type }, key, what, remove = false) => {
 	const ref = doc(db, api({ type, id }))
 
 	const upload = { ...what }
@@ -120,7 +122,7 @@ export const updateDocumentArray: (data: StoreLocation, key: string, what: unkno
 	delete upload.edited
 
 	updateDoc(ref, {
-		[key]: arrayUnion(upload)
+		[key]: remove ? arrayRemove(upload) : arrayUnion(upload)
 	})
 }
 

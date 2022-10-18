@@ -69,8 +69,6 @@
 				if (linkHistory && linkHistory.length !== 0) {
 					const dest = linkHistory[linkHistory.length - 1].url
 
-					console.log($page.routeId, !$page.routeId?.includes(dest))
-
 					if (!$page.routeId?.includes(dest) && !$page.routeId?.includes('[wiki]'))
 						goto(`${base}/${dest}`)
 				}

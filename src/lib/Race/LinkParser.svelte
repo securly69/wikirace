@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { browser } from '$app/environment'
 	import { base } from '$app/paths'
-	import { updateDocument } from '$lib/firebase/firestore'
 	import { game, me } from '$lib/stores'
 	import { afterUpdate } from 'svelte'
+	import { navigate } from './navigation'
 
 	export let html: string
 
@@ -12,43 +11,31 @@
 	afterUpdate(() =>
 		container
 			.querySelectorAll(`a[href*="${base}"]`)
-			.forEach((element: Element) => (element.onclick = wikilink))
+			.forEach((element: any) => (element.onclick = wikilink))
 	)
 
 	const wikilink = (e: MouseEvent) => {
 		e.preventDefault()
 		e.stopPropagation()
-		const href = e.target?.href
-		if (browser && href) {
-			const progress = $me.progress
+		const here = e.target?.href as string
+		const href = here.substring(here.indexOf(base) + base.length + 1)
 
-			progress.linksProgressed++
-			progress.linkHistory.push({ url: href, type: 'url', index: progress.linkHistory.length })
-
-			$me = { ...$me, progress }
-
-			updateDocument({
-				type: 'game',
-				id: $game.id,
-				content: {
-					players: $game.players
-				}
-			})
-		}
+		navigate($game, $me, href)
 	}
 </script>
 
 <div bind:this={container} class="container">{@html html}</div>
 
 <style>
-	:global(a:link),
-	:global(a:visited),
-	:global(a:active) {
-		color: var(--primary);
+	:global(.container a:link),
+	:global(.container a:visited),
+	:global(.container a:active) {
+		color: var(--primary) !important;
 		text-decoration: none;
 	}
 
-	:global(a:hover) {
+	:global(.container a:hover) {
+		color: var(--primary) !important;
 		text-decoration: underline;
 	}
 </style>

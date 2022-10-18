@@ -5,6 +5,7 @@
 	import PlayerScoreViewer from '$lib/Race/PlayerScoreViewer.svelte'
 	import ShareLink from '$lib/UI/Widgets/ShareLink.svelte'
 	import { onMount } from 'svelte'
+	import { defaultProgressValue } from '$lib/Race/defaults'
 
 	export let gameId: string
 
@@ -23,13 +24,7 @@
 				'players',
 				{
 					...$me,
-					progress: {
-						linkHistory: [],
-						linksProgressed: 0,
-						backNavs: 0,
-						isCriticallyClose: false,
-						timesCriticallyClose: 0
-					}
+					progress: defaultProgressValue
 				}
 			)
 		}
