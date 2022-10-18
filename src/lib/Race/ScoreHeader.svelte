@@ -7,7 +7,7 @@
 
 <section in:fade out:fade>
 	<div class="players">
-		{#each $game.players as player}
+		{#each $game.players as player (player.uid)}
 			<PlayerScoreViewer {player} />
 		{/each}
 	</div>

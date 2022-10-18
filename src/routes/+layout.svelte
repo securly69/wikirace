@@ -19,26 +19,8 @@
 
 	onMount(() => {
 		mounted = true
-		unsub = subscribeDocument(
-			{
-				type: 'game',
-				id: $game.id
-			},
-			(doc) => {
-				console.log('hey', doc.data())
-				if (!doc.data()) return
-
-				$game = {
-					...$game,
-					id: doc.id,
-					...doc.data()
-				}
-			}
-		)
-		console.log({ unsub })
 	})
 	onDestroy(() => {
-		console.log('killing', { unsub })
 		if (unsub) {
 			unsub()
 		}
@@ -58,45 +40,39 @@
 				localStorage.setItem(localStorageMe, JSON.stringify($me))
 			}
 
-			if ((!currentGame.id || currentGame.id === '') && $me.gameId && $me.gameId !== '') {
-				console.log('getting info from firestore')
+			if (!unsub && $me.gameId && $me.gameId !== '') {
+				unsub = subscribeDocument(
+					{
+						type: 'game',
+						id: $me.gameId
+					},
+					(response) => {
+						const data = response.data() as Game
 
-				getDocument({
-					type: 'game',
-					id: $me.gameId
-				}).then((response) => {
-					const data = response.data() as Game
+						if (!response.data()) return
 
-					$game = {
-						id: data?.id ?? response.id,
-						route: data.route,
-						state: data.state,
-						players: data.players
+						$game = {
+							...$game,
+							id: $me.gameId,
+							route: data.route,
+							state: data.state,
+							players: data.players
+						}
 					}
-				})
+				)
 			}
-
-			console.log('checking stuff gamestste ->', currentGame.state)
 
 			if (browser && currentGame.state === 'started') {
 				const linkHistory = currentGame.players.find((player) => $me.uid === player.uid)?.progress
 					.linkHistory
-
-				console.log(
-					'curret player',
-					currentGame.players.find((player) => $me.uid === player.uid)
-				)
-				console.log(
-					'history ',
-					currentGame.players.find((player) => $me.uid === player.uid)?.progress.linkHistory
-				)
 
 				if (linkHistory && linkHistory.length !== 0) {
 					const dest = linkHistory[linkHistory.length - 1].url
 
 					console.log($page.routeId, !$page.routeId?.includes(dest))
 
-					if (!$page.routeId?.includes(dest)) goto(`${base}/${dest}`)
+					if (!$page.routeId?.includes(dest) && !$page.routeId?.includes('[wiki]'))
+						goto(`${base}/${dest}`)
 				}
 			}
 		}

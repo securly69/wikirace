@@ -39,3 +39,16 @@
 </script>
 
 <div bind:this={container} class="container">{@html html}</div>
+
+<style>
+	:global(a:link),
+	:global(a:visited),
+	:global(a:active) {
+		color: var(--primary);
+		text-decoration: none;
+	}
+
+	:global(a:hover) {
+		text-decoration: underline;
+	}
+</style>

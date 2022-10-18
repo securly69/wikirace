@@ -25,7 +25,7 @@
 
 <RouteViewer route={$game.route} />
 
-{#each $game.players as player (player)}
+{#each $game.players as player (player.uid)}
 	<div in:fly={{ y: 20 }} out:fly={{ x: 100 }}>
 		<PlayerScoreViewer {player} />
 	</div>

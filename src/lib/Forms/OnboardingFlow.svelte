@@ -9,12 +9,7 @@
 	import Countdown from './Countdown.svelte'
 	import JoinExistingGame from './JoinExistingGame.svelte'
 
-	export let gameData: Game | null = null
-
-	$: {
-		console.log('age gracefully')
-		console.log('game', $game)
-	}
+	export let gameId: string | null = null
 </script>
 
 <Casing backBtn={false}>
@@ -25,8 +20,10 @@
 					<div class="maintain-position" in:fly={{ x: 500 }} out:fly={{ x: -500 }}>
 						<CreateUser />
 					</div>
-				{:else if gameData != null}
-					<JoinExistingGame {gameData} />
+				{:else if gameId != null && (!$game || $game?.state === 'waiting')}
+					<div class="maintain-position" in:fly={{ x: 500 }} out:fly={{ x: -500 }}>
+						<JoinExistingGame {gameId} />
+					</div>
 				{:else if !$game.id || $game.id === ''}
 					<div class="maintain-position" in:fly={{ x: 500 }} out:fly={{ x: -500 }}>
 						<GameStats />

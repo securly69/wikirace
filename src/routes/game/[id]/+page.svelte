@@ -4,8 +4,8 @@
 
 	export let data: PageData
 
-	let { gameData } = data
-	$: ({ gameData } = data)
+	let { gameId } = data
+	$: ({ gameId } = data)
 </script>
 
-<OnboardingFlow {gameData} />
+<OnboardingFlow {gameId} />

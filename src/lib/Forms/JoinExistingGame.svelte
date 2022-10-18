@@ -1,69 +1,58 @@
 <script lang="ts">
 	import { game, me } from '$lib/stores'
-	import { updateDocument } from '$lib/firebase/firestore'
+	import { updateDocument, updateDocumentArray } from '$lib/firebase/firestore'
 	import RouteViewer from '$lib/Race/RouteViewer.svelte'
 	import PlayerScoreViewer from '$lib/Race/PlayerScoreViewer.svelte'
 	import ShareLink from '$lib/UI/Widgets/ShareLink.svelte'
+	import { onMount } from 'svelte'
 
-	export let gameData: Game
+	export let gameId: string
 
-	let myData: Player & { gameId: string }
-	me.subscribe((MY_DATA) => (myData = MY_DATA))
-
-	$: {
-		if (
-			myData.uid &&
-			myData.uid !== '' &&
-			gameData &&
-			gameData.players.find((player) => player.uid === myData.uid) === null
-		) {
-			console.log('where here')
-
-			$game = {
-				...gameData,
-				players: [
-					...gameData.players,
-					{
-						...myData,
-						progress: {
-							linkHistory: [],
-							linksProgressed: 0,
-							backNavs: 0,
-							isCriticallyClose: false,
-							timesCriticallyClose: 0
-						}
-					}
-				]
+	onMount(() => {
+		if ($me.gameId !== gameId && $me.uid && $me.uid !== '') {
+			$me = {
+				...$me,
+				gameId
 			}
 
-			updateDocument({
-				type: 'game',
-				id: $game.id,
-				content: $game
-			})
+			updateDocumentArray(
+				{
+					type: 'game',
+					id: gameId
+				},
+				'players',
+				{
+					...$me,
+					progress: {
+						linkHistory: [],
+						linksProgressed: 0,
+						backNavs: 0,
+						isCriticallyClose: false,
+						timesCriticallyClose: 0
+					}
+				}
+			)
 		}
-	}
+	})
 </script>
 
-<div class="maintain-position">
-	<section>
-		<RouteViewer route={gameData.route} />
+<section>
+	<RouteViewer route={$game.route} />
 
-		{#each gameData.players as player (player)}
-			<div>
-				<PlayerScoreViewer {player} />
-			</div>
-		{/each}
+	{#each $game.players as player (player.uid)}
+		<div>
+			<PlayerScoreViewer {player} />
+		</div>
+	{/each}
 
-		<ShareLink />
+	<ShareLink />
 
-		<p>Waiting for host to start game</p>
+	<p>Waiting for host to start game</p>
 
-		<p>
-			{gameData?.id}
-		</p>
-	</section>
-</div>
+	<p>
+		{$game?.id}
+	</p>
+</section>
 
 <style>
 	section {

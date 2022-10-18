@@ -22,7 +22,9 @@ import {
 	type SetOptions,
 	Query,
 	onSnapshot,
-	type Unsubscribe
+	type Unsubscribe,
+	arrayUnion,
+	updateDoc
 } from 'firebase/firestore'
 import { firebaseApp } from './firebase'
 import { pipe } from '$lib/fp-ts'
@@ -51,8 +53,12 @@ const clense = (content: DocumentData, timestamp: string) => (location: Location
 	delete content.id
 	delete content.contentType
 	content[timestamp] = serverTimestamp()
-
-	console.log('trying tp uploading', { content })
+	if (content.players) {
+		content.players.forEach((player) => {
+			delete player.created
+			delete player.edited
+		})
+	}
 
 	return {
 		location,
@@ -61,6 +67,11 @@ const clense = (content: DocumentData, timestamp: string) => (location: Location
 }
 
 const upload =
+	(protocol: typeof addDoc | typeof setDoc, options: SetOptions | null = null) =>
+	(data: LocationContent) =>
+		protocol(data.location, data.content, options)
+
+const update =
 	(protocol: typeof addDoc | typeof setDoc, options: SetOptions | null = null) =>
 	(data: LocationContent) =>
 		protocol(data.location, data.content, options)
@@ -94,6 +105,25 @@ export const updateDocument: (
 }) =>
 	pipe({ type, id }, api, connect(doc), clense(content, timestamp), upload(setDoc, { merge: true }))
 
+export const updateDocumentArray: (data: StoreLocation, key: string, what: unknown) => void = (
+	{ id, type },
+	key,
+	what: object
+) => {
+	const ref = doc(db, api({ type, id }))
+
+	const upload = { ...what }
+
+	delete upload.id
+	delete upload.contentType
+	delete upload.created
+	delete upload.edited
+
+	updateDoc(ref, {
+		[key]: arrayUnion(upload)
+	})
+}
+
 export const storeQuery: (
 	data: StoreLocation & {
 		amount?: number
@@ -119,8 +149,10 @@ export const storeQuery: (
 		getDocs
 	)
 
-export const subscribeDocument: (data: StoreLocation, action: Function) => Unsubscribe = (
-	{ type, id },
-	action
-) => onSnapshot(doc(db, api({ type, id })), action)
+export const subscribeDocument: (
+	data: StoreLocation,
+	action: (response: DocumentSnapshot<DocumentData>) => void
+) => Unsubscribe = ({ type, id }, action) => onSnapshot(doc(db, api({ type, id })), action)
 // pipe({ type, id }, api, connect(doc), (where)=>onSnapshot(where, action))
+
+arrayUnion
