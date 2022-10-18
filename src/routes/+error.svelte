@@ -10,3 +10,9 @@
 	</center>
 	<FallbackImage alt={`${$page.status}, ${$page?.error?.message ?? 'No error message'}`} />
 </Casing>
+
+<style>
+	:global(body) {
+		font-family: 'Roboto', sans-serif;
+	}
+</style>

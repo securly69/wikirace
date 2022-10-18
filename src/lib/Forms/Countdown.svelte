@@ -67,8 +67,6 @@
 		font-size: 6rem;
 		font-weight: bold;
 		font-family: Roboto, sans-serif;
-		width: 100vw;
-		height: 100vh;
 		color: var(--primary);
 	}
 </style>

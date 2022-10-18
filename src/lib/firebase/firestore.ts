@@ -20,7 +20,9 @@ import {
 	type DocumentData,
 	type WhereFilterOp,
 	type SetOptions,
-	Query
+	Query,
+	onSnapshot,
+	type Unsubscribe
 } from 'firebase/firestore'
 import { firebaseApp } from './firebase'
 import { pipe } from '$lib/fp-ts'
@@ -114,3 +116,9 @@ export const storeQuery: (
 			),
 		getDocs
 	)
+
+export const subscribeDocument: (data: StoreLocation, action: Function) => Unsubscribe = (
+	{ type, id },
+	action
+) => onSnapshot(doc(db, api({ type, id })), action)
+// pipe({ type, id }, api, connect(doc), (where)=>onSnapshot(where, action))

@@ -66,6 +66,8 @@
 	const finish = () => {
 		if ($game.route.length < 2) return
 
+		console.log('finish')
+
 		$game = {
 			...$game,
 			route: $game.route.map((r) => r.replaceAll(' ', '_')),
@@ -85,11 +87,15 @@
 			]
 		}
 
+		console.log($game)
+
 		uploadDocument({
 			type: 'game',
 			content: $game
 		}).then((response) => {
 			const id = response?.id ?? ''
+
+			console.log('whao', id)
 
 			$game = { ...$game, id }
 
