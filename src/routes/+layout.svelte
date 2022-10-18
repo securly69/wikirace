@@ -2,7 +2,67 @@
 	import { base } from '$app/paths'
 	import Loader from '$lib/UI/Widgets/Loader.svelte'
 	import { Toasts } from 'as-toast'
-	import { navigating } from '$app/stores'
+	import { navigating, page } from '$app/stores'
+	import { me, game } from '$lib/stores'
+	import { onMount } from 'svelte'
+	import { browser } from '$app/environment'
+	import { goto } from '$app/navigation'
+	import { getDocument } from '$lib/firebase/firestore'
+
+	const localStorageMe = 'wikiRaceMe'
+
+	let mounted = false
+	let myData: Player & { gameId: string }
+	let currentGame: Game
+
+	onMount(() => (mounted = true))
+
+	me.subscribe((MY_DATA) => (myData = MY_DATA))
+	game.subscribe((CURRENT_GAME) => (currentGame = CURRENT_GAME))
+
+	$: {
+		if (mounted) {
+			if (!myData.uid || myData.uid === '') {
+				myData = JSON.parse(localStorage.getItem(localStorageMe) ?? '{}')
+			}
+
+			if (myData.uid && myData.uid !== '') {
+				$me = myData
+				localStorage.setItem(localStorageMe, JSON.stringify($me))
+			}
+
+			if ((!currentGame.id || currentGame.id === '') && $me.gameId && $me.gameId !== '') {
+				getDocument({
+					type: 'game',
+					id: $me.gameId
+				}).then((response) => {
+					const data = response.data() as Game
+
+					$game = {
+						id: data.id ?? response.id,
+						route: data.route,
+						state: data.state,
+						players: data.players
+					}
+				})
+			}
+
+			if (browser) {
+				if (currentGame.state === 'started') {
+					const linkHistory = currentGame.players.find((player) => $me.uid === player.uid)?.progress
+						.linkHistory
+
+					if (linkHistory && linkHistory.length !== 0) {
+						const dest = linkHistory[linkHistory.length - 1].url
+
+						if (!$page.routeId?.includes(dest)) goto(`${base}/${dest}`)
+					}
+				} else if (currentGame.state === 'countdown') {
+					goto(`${base}/countdown`)
+				}
+			}
+		}
+	}
 </script>
 
 <svelte:head>

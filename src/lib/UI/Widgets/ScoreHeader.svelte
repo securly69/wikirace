@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition'
-	import { players } from '$lib/stores'
+	import { game } from '$lib/stores'
 	import PlayerScoreViewer from './PlayerScoreViewer.svelte'
 	import FabMenu from './FABMenu.svelte'
 </script>
 
 <section in:fade out:fade>
 	<div class="players">
-		{#each $players as player}
+		{#each $game.players as player}
 			<PlayerScoreViewer {player} />
 		{/each}
 	</div>

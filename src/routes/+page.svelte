@@ -2,7 +2,7 @@
 	import CreateUser from '$lib/Forms/CreateUser.svelte'
 	import GameStats from '$lib/Forms/GameStats.svelte'
 	import PlayersAdd from '$lib/Forms/PlayersAdd.svelte'
-	import { game, players } from '$lib/stores'
+	import { game, me } from '$lib/stores'
 	import Casing from '$lib/UI/PageContainers/Casing.svelte'
 	import FallbackImage from '$lib/UI/Widgets/FallbackImage.svelte'
 	import { fly } from 'svelte/transition'
@@ -12,11 +12,11 @@
 	<div class="homepage">
 		<div class="login">
 			<div class="carousel">
-				{#if $players.length === 0}
+				{#if !$me.uid || $me.uid === ''}
 					<div class="maintain-position" in:fly={{ x: 500 }} out:fly={{ x: -500 }}>
 						<CreateUser />
 					</div>
-				{:else if !$game.ready}
+				{:else if !$game.id || $game.id === ''}
 					<div class="maintain-position" in:fly={{ x: 500 }} out:fly={{ x: -500 }}>
 						<GameStats />
 					</div>

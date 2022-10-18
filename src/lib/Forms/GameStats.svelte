@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { game } from '$lib/stores'
+	import { updateDocument, uploadDocument } from '$lib/firebase/firestore'
+	import { game, me } from '$lib/stores'
 	import DataInput from '$lib/UI/Widgets/DataInput.svelte'
 	import Icon from '@iconify/svelte'
 	import { fade } from 'svelte/transition'
@@ -68,9 +69,44 @@
 		$game = {
 			...$game,
 			route: $game.route.map((r) => r.replaceAll(' ', '_')),
-			id: 'test',
-			ready: true
+			id: '',
+			state: 'waiting',
+			players: [
+				{
+					...$me,
+					progress: {
+						linkHistory: [],
+						linksProgressed: 0,
+						backNavs: 0,
+						isCriticallyClose: false,
+						timesCriticallyClose: 0
+					}
+				}
+			]
 		}
+
+		uploadDocument({
+			type: 'game',
+			content: $game
+		}).then((response) => {
+			const id = response?.id ?? ''
+
+			$game = { ...$game, id }
+
+			updateDocument({
+				type: 'game',
+				id: $game.id,
+				content: $game
+			})
+
+			$me = { ...$me, gameId: id }
+
+			updateDocument({
+				type: 'player',
+				id: $me.uid,
+				content: $me
+			})
+		})
 	}
 </script>
 
@@ -81,7 +117,7 @@
 		{#each $game.route as route, index}
 			<div in:fade>
 				<span>
-					{index + 1}. {route}
+					{index + 1}. {route.replaceAll('_', ' ')}
 				</span>
 
 				<div on:click={removeFromRoute(index)}>

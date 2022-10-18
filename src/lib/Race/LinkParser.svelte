@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { browser } from '$app/environment'
-	import { goto } from '$app/navigation'
 	import { base } from '$app/paths'
-	import { me } from '$lib/stores'
+	import { updateDocument } from '$lib/firebase/firestore'
+	import { game, me } from '$lib/stores'
 	import { afterUpdate } from 'svelte'
 
 	export let html: string
@@ -27,7 +27,13 @@
 
 			$me = { ...$me, progress }
 
-			goto(href)
+			updateDocument({
+				type: 'game',
+				id: $game.id,
+				content: {
+					players: $game.players
+				}
+			})
 		}
 	}
 </script>

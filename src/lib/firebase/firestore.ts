@@ -20,41 +20,30 @@ import {
 	type DocumentData,
 	type WhereFilterOp,
 	type SetOptions,
-	Query,
+	Query
 } from 'firebase/firestore'
 import { firebaseApp } from './firebase'
 import { pipe } from '$lib/fp-ts'
 
-
-type Location = DocumentReference<DocumentData> | CollectionReference<DocumentData> | Query<DocumentData>
+type Location =
+	| DocumentReference<DocumentData>
+	| CollectionReference<DocumentData>
+	| Query<DocumentData>
 type LocationContent = {
 	location: Location
 	content: DocumentData
 }
-type PossibleConnections = typeof doc | typeof collection 
+type PossibleConnections = typeof doc | typeof collection
 
 const db = getFirestore(firebaseApp)
 
-export const api: (data: StoreLocation) => string = ({
-	source = null,
-	isTeam = false,
-	type = null,
-	id = null
-}): string => {
-	let api = isTeam ? 'teams' : 'users'
+export const api: (data: StoreLocation) => string = ({ type, id = null }): string =>
+	`${type}${id != null ? `/${id}` : ''}`
 
-	if (source != null && type != null) {
-		api += `/${source}/${type}`
-	}
-
-	if (id != null) {
-		api += `/${id}`
-	}
-
-	return api
-}
-
-const connect = <T extends PossibleConnections>(store: T) => (api: string) => store(db, api)
+const connect =
+	<T extends PossibleConnections>(store: T) =>
+	(api: string) =>
+		store(db, api)
 
 const clense = (content: DocumentData, timestamp: string) => (location: Location) => {
 	delete content.id
@@ -67,45 +56,26 @@ const clense = (content: DocumentData, timestamp: string) => (location: Location
 	}
 }
 
-
 const upload =
 	(protocol: typeof addDoc | typeof setDoc, options: SetOptions | null = null) =>
 	(data: LocationContent) =>
 		protocol(data.location, data.content, options)
 
 export const getDocument: (data: StoreLocation) => Promise<DocumentSnapshot<DocumentData>> = ({
-	source = null,
-	isTeam = false,
-	type = null,
+	type,
 	id
-}) => pipe({ source, isTeam, type, id }, api, connect(doc), getDoc)
+}) => pipe({ type, id }, api, connect(doc), getDoc)
 
-export const deleteDocument: (data: StoreLocation) => Promise<void> = ({
-	source = null,
-	isTeam = false,
-	type = null,
-	id
-}) => pipe({ source, isTeam, type, id }, api, connect(doc), deleteDoc)
+export const deleteDocument: (data: StoreLocation) => Promise<void> = ({ type, id }) =>
+	pipe({ type, id }, api, connect(doc), deleteDoc)
 
 export const uploadDocument: (
 	data: StoreLocation & {
 		content: DocumentData
 		timestamp?: string
 	}
-) => Promise<void | DocumentReference<DocumentData>> = ({
-	content,
-	source = null,
-	type = null,
-	isTeam = false,
-	timestamp = 'created'
-}) =>
-	pipe(
-		{ source, type, isTeam },
-		api,
-		connect(collection),
-		clense(content, timestamp),
-		upload(addDoc)
-	)
+) => Promise<void | DocumentReference<DocumentData>> = ({ content, type, timestamp = 'created' }) =>
+	pipe({ type }, api, connect(collection), clense(content, timestamp), upload(addDoc))
 
 export const updateDocument: (
 	data: StoreLocation & {
@@ -115,18 +85,10 @@ export const updateDocument: (
 ) => Promise<void | DocumentReference<DocumentData>> = ({
 	id,
 	content,
-	source = null,
-	type = null,
-	isTeam = false,
+	type,
 	timestamp = 'edited'
 }) =>
-	pipe(
-		{ source, type, isTeam, id },
-		api,
-		connect(doc),
-		clense(content, timestamp),
-		upload(setDoc, { merge: true })
-	)
+	pipe({ type, id }, api, connect(doc), clense(content, timestamp), upload(setDoc, { merge: true }))
 
 export const storeQuery: (
 	data: StoreLocation & {
@@ -138,16 +100,9 @@ export const storeQuery: (
 			value: unknown
 		}[]
 	}
-) => Promise<QuerySnapshot<DocumentData>> = ({
-	source = null,
-	isTeam = false,
-	type = null,
-	amount = 50,
-	timestamp = 'date',
-	queries
-}) =>
+) => Promise<QuerySnapshot<DocumentData>> = ({ type, amount = 50, timestamp = 'date', queries }) =>
 	pipe(
-		{ source, isTeam, type },
+		{ type },
 		api,
 		connect(collection),
 		(reference) =>

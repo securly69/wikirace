@@ -2,9 +2,11 @@
 	import { goto } from '$app/navigation'
 	import { base } from '$app/paths'
 	import { page } from '$app/stores'
-	import { game, players } from '$lib/stores'
+	import { updateDocument, uploadDocument } from '$lib/firebase/firestore'
+	import { game } from '$lib/stores'
 	import CopyToClipboard from '$lib/UI/Widgets/CopyToClipboard.svelte'
 	import PlayerScoreViewer from '$lib/UI/Widgets/PlayerScoreViewer.svelte'
+	import RouteViewer from '$lib/UI/Widgets/RouteViewer.svelte'
 	import { addToast } from 'as-toast'
 
 	let clipboard: any
@@ -23,35 +25,24 @@
 	}
 
 	const start = () => {
-		goto(`${base}/countdown`)
-	}
+		$game = { ...$game, state: 'countdown' }
 
-	const quickadd = () => {
-		$players = [
-			...$players,
-			{
-				name: 'nameValue',
-				uid: '',
-				color: '#f00',
-				score: 0,
-				progress: {
-					linkHistory: [],
-					linksProgressed: 0,
-					backNavs: 0,
-					isCriticallyClose: false,
-					timesCriticallyClose: 0
-				}
-			}
-		]
+		updateDocument({
+			type: 'game',
+			id: $game.id,
+			content: $game
+		})
 	}
 </script>
 
-{#each $players as player}
+<RouteViewer route={$game.route} />
+
+{#each $game.players as player}
 	<PlayerScoreViewer {player} />
 {/each}
 
-{#if $players.length === 1}
-	<p on:click={quickadd}>Cannot start game with only one player :)</p>
+{#if $game.players.length === 1}
+	<p>Cannot start game with only one player :)</p>
 {:else}
 	<button class="button" on:click={start} on:keydown={start}> Start Game </button>
 {/if}

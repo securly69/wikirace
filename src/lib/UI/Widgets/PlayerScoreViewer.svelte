@@ -1,20 +1,8 @@
 <script lang="ts">
-	import { players } from '$lib/stores'
-
-	export let player: Player
-
-	const add = () => {
-		player.progress.linkHistory.push({
-			type: 'url',
-			url: 'another one',
-			index: player.progress.linkHistory.length
-		})
-
-		$players = [...$players]
-	}
+	export let player: Player & { progress: Progress }
 </script>
 
-<div class="player" on:click={add}>
+<div class="player">
 	<p class="name" style="color: {player.color ?? 'var(--text)'};">
 		{player.name}
 	</p>
@@ -30,7 +18,7 @@
 	</div>
 
 	<div class="score">
-		{player.score}
+		{player.score} win{player.score !== 1 ? 's' : ''}
 	</div>
 </div>
 
@@ -71,7 +59,9 @@
 		align-items: center;
 		width: 6rem;
 		margin-left: auto;
-		border: 1px solid green;
+		color: white;
+		font-weight: bold;
+		background-color: green;
 		border-radius: 0.5rem;
 	}
 </style>

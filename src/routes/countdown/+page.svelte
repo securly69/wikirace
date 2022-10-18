@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { goto } from '$app/navigation'
-	import { base } from '$app/paths'
-	import { game } from '$lib/stores'
+	import { updateDocument } from '$lib/firebase/firestore'
+	import { game, me } from '$lib/stores'
 	import { onMount } from 'svelte'
 
 	let time = 5
@@ -12,7 +11,40 @@
 
 	const countdown = async () => {
 		if (time < 0) {
-			goto(`${base}/${$game.route[0]}`)
+			const updatedPlayerList = $game.players
+			const myId = updatedPlayerList.findIndex((player) => $me.uid === player.uid)
+
+			if (myId === -1) {
+				console.error('cannot find your user')
+				return
+			}
+
+			updatedPlayerList[myId].progress = {
+				linksProgressed: 0,
+				backNavs: 0,
+				isCriticallyClose: false,
+				timesCriticallyClose: 0,
+				linkHistory: [
+					{
+						type: 'url',
+						url: $game.route[0],
+						index: 0
+					}
+				]
+			}
+
+			$game = {
+				...$game,
+				state: 'started',
+				players: updatedPlayerList
+			}
+
+			updateDocument({
+				type: 'game',
+				id: $game.id,
+				content: $game
+			})
+
 			return
 		}
 

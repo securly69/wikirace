@@ -1,11 +1,8 @@
 <script lang="ts">
-	import { base } from '$app/paths'
-	import { page } from '$app/stores'
-	import { players, game, me } from '$lib/stores'
-	import CopyToClipboard from '$lib/UI/Widgets/CopyToClipboard.svelte'
+	import { updateDocument, uploadDocument } from '$lib/firebase/firestore'
+	import { me } from '$lib/stores'
 	import DataInput from '$lib/UI/Widgets/DataInput.svelte'
 	import Icon from '@iconify/svelte'
-	import { addToast } from 'as-toast'
 
 	const randomStarterNames = [
 		'party_animal',
@@ -76,18 +73,23 @@
 		$me = {
 			name: nameValue.trim(),
 			uid: '',
+			gameId: '',
 			color: chosenColor,
-			score: 0,
-			progress: {
-				linkHistory: [],
-				linksProgressed: 0,
-				backNavs: 0,
-				isCriticallyClose: false,
-				timesCriticallyClose: 0
-			}
+			score: 0
 		}
 
-		$players = [...$players, $me]
+		uploadDocument({
+			type: 'player',
+			content: $me
+		}).then((response) => {
+			$me = { ...$me, uid: response?.id ?? '' }
+
+			updateDocument({
+				type: 'player',
+				id: $me.uid,
+				content: $me
+			})
+		})
 	}
 </script>
 

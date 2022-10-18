@@ -14,7 +14,10 @@ type Route = {
 type Game = {
 	id: string
 	route: string[]
-	ready: boolean
+	state: 'started' | 'countdown' | 'waiting'
+	players: (Player & {
+		progress: Progress
+	})[]
 }
 
 type Player = {
@@ -22,7 +25,6 @@ type Player = {
 	name: string
 	color: Color
 	score: number
-	progress: Progress
 }
 
 type Progress = {
