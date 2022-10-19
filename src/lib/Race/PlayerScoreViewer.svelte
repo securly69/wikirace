@@ -7,7 +7,7 @@
 		{player.name}
 	</p>
 	<div class="progress">
-		{#each player.progress.linkHistory as link, index}
+		{#each player.progress.linkHistory as link}
 			<div
 				class="counter"
 				style="background-color: {link.type === 'url' ? 'rgb(0 225 255)' : 'rgb(225 0 0)'} "

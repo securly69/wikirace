@@ -5,12 +5,16 @@
 	import GlassyButton from '$lib/UI/Widgets/GlassyButton.svelte'
 	import { fly } from 'svelte/transition'
 	import { base } from '$app/paths'
-	import { game } from '$lib/stores'
+	import { me } from '$lib/stores'
+	import { removeLocalStorage } from '$lib/Race/storage'
 
 	const baseButtons = [
 		{
-			text: 'Go back main menu',
+			text: 'Exit game',
 			action: () => {
+				removeLocalStorage()
+				$me = { ...$me, gameId: '' }
+				console.log(browser, base, $me)
 				if (browser) goto(base)
 			}
 		},
