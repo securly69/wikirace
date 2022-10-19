@@ -6,7 +6,7 @@ import { base } from '$app/paths'
 const wiki = 'https://en.wikipedia.org/w/api.php?action=parse&format=json&page='
 
 export const load: PageServerLoad = async ({ params }) => {
-	const prefilteredData = await fetch(`${wiki}${params.wiki ?? 'Main_page'}`)
+	const prefilteredData = await fetch(`${wiki}${params?.wiki ?? 'Main_page'}`)
 
 	let html = pipe(await prefilteredData.json(), JSON.stringify, JSON.parse)
 	let parsed = html?.parse

@@ -2,11 +2,13 @@
 	import { base } from '$app/paths'
 	import { page } from '$app/stores'
 	import { updateDocument } from '$lib/firebase/firestore'
-	import { game } from '$lib/stores'
+	import { game, me } from '$lib/stores'
 	import PlayerScoreViewer from '$lib/Race/PlayerScoreViewer.svelte'
 	import RouteViewer from '$lib/Race/RouteViewer.svelte'
 	import ShareLink from '$lib/UI/Widgets/ShareLink.svelte'
 	import { fly } from 'svelte/transition'
+	import Icon from '@iconify/svelte'
+	import { removeLocalStorage } from '$lib/Race/storage'
 
 	let gameLink: string
 
@@ -21,7 +23,19 @@
 			content: $game
 		})
 	}
+
+	const reset = () => {
+		removeLocalStorage()
+		$me = { ...$me, gameId: '' }
+		$game = { ...$game, id: '' }
+	}
 </script>
+
+<div class="flex">
+	<button class="button back-btn" on:click={reset}>
+		<Icon icon="fluent:arrow-reset-24-filled" width={25} />
+	</button>
+</div>
 
 <RouteViewer route={$game.route} />
 
@@ -39,12 +53,17 @@
 
 <ShareLink />
 
-<p>
+<!-- <p style="user-select: unset;">
 	{gameLink}
-</p>
-
+</p> -->
 <style>
 	p {
 		word-break: break-all;
+	}
+
+	.back-btn {
+		padding: 0.7rem 2.3rem;
+		background: rgba(253, 155, 8, 0.877);
+		color: rgb(255, 253, 236);
 	}
 </style>

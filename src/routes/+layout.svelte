@@ -2,15 +2,14 @@
 	import { base } from '$app/paths'
 	import Loader from '$lib/UI/Widgets/Loader.svelte'
 	import { Toasts } from 'as-toast'
-	import { navigating, page } from '$app/stores'
-	import { me, game } from '$lib/stores'
+	import { navigating } from '$app/stores'
+	import { me, game, location } from '$lib/stores'
 	import { onDestroy, onMount } from 'svelte'
-	import { browser } from '$app/environment'
-	import { goto } from '$app/navigation'
-	import { getDocument, subscribeDocument } from '$lib/firebase/firestore'
+	import { subscribeDocument } from '$lib/firebase/firestore'
 	import type { Unsubscribe } from 'firebase/firestore'
-
-	const localStorageMe = 'wikiRaceMe'
+	import { addLocalStorage, getLocalStorage } from '$lib/Race/storage'
+	import { goto } from '$app/navigation'
+	import { browser } from '$app/environment'
 
 	let unsub: Unsubscribe
 	let mounted = false
@@ -32,12 +31,12 @@
 	$: {
 		if (mounted) {
 			if (!myData.uid || myData.uid === '') {
-				myData = JSON.parse(localStorage.getItem(localStorageMe) ?? '{}')
+				myData = getLocalStorage()
 			}
 
 			if (myData.uid && myData.uid !== '') {
 				$me = myData
-				localStorage.setItem(localStorageMe, JSON.stringify($me))
+				addLocalStorage($me)
 			}
 
 			if (!unsub && $me.gameId && $me.gameId !== '') {
@@ -62,15 +61,13 @@
 				)
 			}
 
-			if (browser && currentGame.state === 'started') {
+			if (currentGame.state === 'started') {
 				const linkHistory = currentGame.players.find((player) => $me.uid === player.uid)?.progress
 					.linkHistory
 
 				if (linkHistory && linkHistory.length !== 0) {
-					const dest = linkHistory[linkHistory.length - 1].url
-
-					if (!$page.routeId?.includes(dest) && !$page.routeId?.includes('[wiki]'))
-						goto(`${base}/${dest}`)
+					$location = linkHistory[linkHistory.length - 1].url
+					if (browser) goto(`${base}/play`)
 				}
 			}
 		}

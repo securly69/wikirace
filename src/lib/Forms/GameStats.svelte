@@ -1,13 +1,16 @@
 <script lang="ts">
-	import { updateDocument, uploadDocument } from '$lib/firebase/firestore'
+	import { getDocument, updateDocument, uploadDocument } from '$lib/firebase/firestore'
 	import { defaultProgressValue } from '$lib/Race/defaults'
-	import { game, me } from '$lib/stores'
+	import { removeLocalStorage } from '$lib/Race/storage'
+	import { game, joinedGameId, me } from '$lib/stores'
 	import DataInput from '$lib/UI/Widgets/DataInput.svelte'
 	import Icon from '@iconify/svelte'
 	import { fade } from 'svelte/transition'
 
 	let value: string
+	let gameId: string
 	let shouldShakeInput = false
+	let shouldShakeGameId = false
 
 	let searchResults: { title: string; pageid: number; snippet: string }[] = []
 
@@ -40,6 +43,22 @@
 		await new Promise((resolve) => setTimeout(resolve, 820))
 
 		shouldShakeInput = false
+	}
+
+	const shakeGameInputNo = async () => {
+		shouldShakeGameId = true
+
+		await new Promise((resolve) => setTimeout(resolve, 820))
+
+		shouldShakeGameId = false
+	}
+
+	const joinGame = async () => {
+		if (await (await getDocument({ type: 'game', id: gameId })).exists) {
+			$joinedGameId = gameId
+		} else {
+			shakeGameInputNo()
+		}
 	}
 
 	const addRoute = (index: number) => () => {
@@ -96,10 +115,37 @@
 			})
 		})
 	}
+
+	const back = () => {
+		removeLocalStorage()
+		$me = {
+			...$me,
+			uid: ''
+		}
+	}
 </script>
 
+<p>
+	Welcome <span style="color: {$me.color}">{$me.name}</span>.
+	<span class="link" on:click={back}>Change name?</span>
+</p>
+
 {#if $game.route.length === 0}
-	<p>There are no routes so far.</p>
+	<div class="flex" class:shake={shouldShakeGameId}>
+		<DataInput
+			bind:value={gameId}
+			text="Join an existing game"
+			name="gameId"
+			id="gameId"
+			type="gameId"
+		/>
+
+		<button class="button" on:click={joinGame}>
+			<Icon icon="akar-icons:send" width={25} />
+		</button>
+	</div>
+
+	<p>Or...</p>
 {:else}
 	<div class="numbered-list">
 		{#each $game.route as route, index}
@@ -108,7 +154,7 @@
 					{index + 1}. {route.replaceAll('_', ' ')}
 				</span>
 
-				<div on:click={removeFromRoute(index)}>
+				<div on:click={removeFromRoute(index)} style="cursor: pointer;">
 					<Icon color="red" icon="akar-icons:cross" />
 				</div>
 			</div>
@@ -117,15 +163,7 @@
 {/if}
 
 <div class:shake={shouldShakeInput}>
-	<DataInput
-		bind:value
-		text="Choose the next route"
-		name="route"
-		id="route"
-		type="route"
-		required
-		attempted
-	/>
+	<DataInput bind:value text="Choose the next route" name="route" id="route" type="route" />
 </div>
 
 <div class="search-results" class:hidden={searchResults.length === 0}>
@@ -146,6 +184,25 @@
 </button>
 
 <style>
+	.flex {
+		display: flex;
+		gap: 1rem;
+		justify-content: space-between;
+		align-items: flex-end;
+	}
+	.flex .button {
+		height: 3.15rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.link {
+		color: var(--primary);
+		cursor: pointer;
+	}
+	.link:hover {
+		text-decoration: underline;
+	}
+
 	.disabled {
 		background-color: rgb(159, 180, 199);
 		color: rgb(136, 136, 136);

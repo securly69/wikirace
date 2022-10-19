@@ -1,7 +1,5 @@
-import { browser } from '$app/environment'
-import { goto } from '$app/navigation'
-import { base } from '$app/paths'
 import { updateDocumentArray } from '$lib/firebase/firestore'
+import { location } from '$lib/stores'
 import { defaultProgressValue } from './defaults'
 
 export const navigate = (game: Game, me: Player & { gameId: string }, dest: string) => {
@@ -34,5 +32,5 @@ export const navigate = (game: Game, me: Player & { gameId: string }, dest: stri
 		{ ...myself, progress }
 	)
 
-	if (browser && dest) goto(`${base}/${dest}`)
+	location.set(dest)
 }

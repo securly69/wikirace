@@ -43,10 +43,6 @@
 	<ShareLink />
 
 	<p>Waiting for host to start game</p>
-
-	<p>
-		{$game?.id}
-	</p>
 </section>
 
 <style>

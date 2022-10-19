@@ -2,14 +2,12 @@
 	import CreateUser from '$lib/Forms/CreateUser.svelte'
 	import GameStats from '$lib/Forms/GameStats.svelte'
 	import PlayersAdd from '$lib/Forms/PlayersAdd.svelte'
-	import { game, me } from '$lib/stores'
+	import { game, me, joinedGameId } from '$lib/stores'
 	import Casing from '$lib/UI/PageContainers/Casing.svelte'
 	import FallbackImage from '$lib/UI/Widgets/FallbackImage.svelte'
 	import { fly } from 'svelte/transition'
 	import Countdown from './Countdown.svelte'
 	import JoinExistingGame from './JoinExistingGame.svelte'
-
-	export let gameId: string | null = null
 </script>
 
 <Casing backBtn={false}>
@@ -20,9 +18,9 @@
 					<div class="maintain-position" in:fly={{ x: 500 }} out:fly={{ x: -500 }}>
 						<CreateUser />
 					</div>
-				{:else if gameId != null && (!$game || $game?.state === 'waiting')}
+				{:else if $joinedGameId !== '' && (!$game || $game?.state === 'waiting')}
 					<div class="maintain-position" in:fly={{ x: 500 }} out:fly={{ x: -500 }}>
-						<JoinExistingGame {gameId} />
+						<JoinExistingGame gameId={$joinedGameId} />
 					</div>
 				{:else if !$game.id || $game.id === ''}
 					<div class="maintain-position" in:fly={{ x: 500 }} out:fly={{ x: -500 }}>
@@ -56,6 +54,10 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 5rem 2rem;
+		user-select: none;
+	}
+	.login {
+		user-select: unset;
 	}
 
 	:global(.homepage > *) {

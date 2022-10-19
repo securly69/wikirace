@@ -8,7 +8,8 @@
 	let clipboard: any
 	let gameLink: string
 
-	$: gameLink = `${$page.url.toString().split(base)[0]}${base}/game/${$game.id}`
+	// $: gameLink = `${$page.url.toString().split(base)[0]}${base}/game/${$game.id}`
+	$: gameLink = `${$game.id}`
 
 	const share = () => {
 		const value = gameLink
@@ -17,10 +18,10 @@
 			props: { value }
 		})
 		app.$destroy()
-		addToast('Link copied!')
+		addToast('Game ID copied!')
 	}
 </script>
 
-<button class="button" on:click={share} on:keydown={share}> Click here to copy link </button>
+<button class="button" on:click={share} on:keydown={share}> Click here to copy Game ID </button>
 
 <div bind:this={clipboard} />
