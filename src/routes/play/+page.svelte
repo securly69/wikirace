@@ -60,7 +60,7 @@
 {/if}
 
 <GameShowWikiPage wiki={$location} let:html let:title>
-	<section class:end={win || lose}>
+	<section class:end={win || lose.who !== ''}>
 		<h1 id="firstHeading" class="firstHeading mw-first-heading">
 			<span class="mw-page-title-main">{title ?? '[error]: missing title'}</span>
 		</h1>
