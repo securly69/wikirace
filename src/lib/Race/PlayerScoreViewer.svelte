@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Icon from '@iconify/svelte'
+
 	export let player: Player & { progress: Progress }
 </script>
 
@@ -10,9 +12,10 @@
 		{#each player.progress.linkHistory as link}
 			<div
 				class="counter"
-				style="background-color: {link.type === 'url' ? 'rgb(0 225 255)' : 'rgb(225 0 0)'} "
+				style="background-color: {link.type === 'url' ? 'var(--primary)' : 'var(--error)'};"
+				color="var(--bg)"
 			>
-				&nbsp;
+				<Icon icon={link.type === 'url' ? 'akar-icons:arrow-right' : 'bi:arrow-90deg-left'} />
 			</div>
 		{/each}
 	</div>
@@ -51,6 +54,9 @@
 		background-color: rgb(0, 225, 255);
 		border: 1px solid black;
 		border-radius: 0.25rem;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 
 	.score {

@@ -7,12 +7,24 @@
 	import { browser } from '$app/environment'
 	import GameShowWikiPage from '$lib/NoBackendFix/GameShowWikiPage.svelte'
 
-	let win = true
+	let win = false
+	let lose = {
+		who: '',
+		color: ''
+	}
 
 	$: {
 		if ($location === $game.route[$game.route.length - 1]) {
 			win = true
-		}
+		} else
+			$game.players.forEach((player) => {
+				if (
+					player.progress.linkHistory[player.progress.linkHistory.length - 1].url ===
+					$game.route[$game.route.length - 1]
+				) {
+					lose = { who: player.name, color: player.color }
+				}
+			})
 	}
 
 	onMount(() => {
@@ -34,18 +46,21 @@
 	}
 </script>
 
-{#if win}
+{#if win || lose.who !== ''}
 	<div class="winner">
 		<div class="card">
-			<p>You Won!</p>
-			<p>You go to the end first!</p>
+			<p>You {win ? 'Won' : 'Lost'}!</p>
+			<p>
+				<span style="color: {win ? 'var(--text)' : lose.color};"> {win ? 'You' : lose.who} </span>
+				got to the end first!
+			</p>
 			<button class="button" on:click={goHome}>Go home</button>
 		</div>
 	</div>
 {/if}
 
 <GameShowWikiPage wiki={$location} let:html let:title>
-	<section>
+	<section class:end={win || lose}>
 		<h1 id="firstHeading" class="firstHeading mw-first-heading">
 			<span class="mw-page-title-main">{title ?? '[error]: missing title'}</span>
 		</h1>
@@ -68,6 +83,10 @@
 		line-height: 1.6;
 	}
 
+	section.end {
+		pointer-events: none !important;
+	}
+
 	:global(section .thumbinner) {
 		max-width: 800px;
 	}
@@ -79,7 +98,7 @@
 		right: 0;
 		top: 0;
 		bottom: 0;
-		background-color: rgba(219, 219, 219, 0.315);
+		background-color: rgba(219, 219, 219, 0.515);
 		display: flex;
 		justify-content: center;
 		align-items: center;

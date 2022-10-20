@@ -20,8 +20,10 @@ export const navigate = (game: Game, me: Player & { gameId: string }, dest: stri
 
 	const progress = myself.progress ?? defaultProgressValue
 
+	const type = progress.linkHistory.findIndex((where) => where.url === dest) === -1 ? 'url' : 'back'
+
 	progress.linksProgressed++
-	progress.linkHistory.push({ url: dest, type: 'url', index: progress.linkHistory.length })
+	progress.linkHistory.push({ url: dest, type, index: progress.linkHistory.length })
 
 	updateDocumentArray(
 		{
