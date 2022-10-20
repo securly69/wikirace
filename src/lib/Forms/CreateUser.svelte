@@ -61,7 +61,10 @@
 	let nameValue = randomStarterNames[Math.floor(Math.random() * randomStarterNames.length)]
 	let chosenColor: Color = colors[Math.floor(Math.random() * colors.length)]
 
-	let value: string
+	let value: string = ''
+
+	$: nameValue =
+		value === '' ? randomStarterNames[Math.floor(Math.random() * randomStarterNames.length)] : value
 
 	const changeColor = (input: typeof colors[number]) => {
 		chosenColor = input

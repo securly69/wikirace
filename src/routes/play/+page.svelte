@@ -41,7 +41,7 @@
 			route: [],
 			players: []
 		}
-		console.log('won')
+		$me = { ...$me, gameId: '' }
 		if (browser) goto(base)
 	}
 </script>
