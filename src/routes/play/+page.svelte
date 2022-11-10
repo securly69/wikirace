@@ -6,6 +6,7 @@
 	import { base } from '$app/paths'
 	import { browser } from '$app/environment'
 	import GameShowWikiPage from '$lib/NoBackendFix/GameShowWikiPage.svelte'
+	import ScoreResults from '$lib/Race/ScoreResults.svelte'
 
 	let win = false
 	let lose = {
@@ -49,11 +50,21 @@
 {#if win || lose.who !== ''}
 	<div class="winner">
 		<div class="card">
-			<p>You {win ? 'Won' : 'Lost'}!</p>
+			<p>You {win ? 'Won! 🎉' : 'Lost'}</p>
 			<p>
 				<span style="color: {win ? 'var(--text)' : lose.color};"> {win ? 'You' : lose.who} </span>
-				got to the end first!
+				got to
+				<span class="destination">
+					{$game.route[$game.route.length - 1].replaceAll('_', ' ')}
+				</span>
+				first!
 			</p>
+			<hr />
+			<div class="scrollable-stats">
+				{#each $game.players as player}
+					<ScoreResults {player} />
+				{/each}
+			</div>
 			<button class="button" on:click={goHome}>Go home</button>
 		</div>
 	</div>
@@ -106,6 +117,10 @@
 	}
 
 	.card {
+		width: 60vw;
+		max-width: 700px;
+		min-width: 300px;
+		max-height: 70vh;
 		text-align: center;
 		padding: 1.5rem;
 		background-color: var(--bg);
@@ -113,5 +128,15 @@
 		box-shadow: 10px 10px 25px 40px #ccc6;
 		display: flex;
 		flex-direction: column;
+	}
+
+	.destination {
+		color: var(--primary);
+	}
+
+	.scrollable-stats {
+		display: flex;
+		flex-direction: column;
+		overflow-y: auto;
 	}
 </style>

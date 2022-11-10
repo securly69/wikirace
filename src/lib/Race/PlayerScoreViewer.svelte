@@ -1,7 +1,13 @@
 <script lang="ts">
+	import { game } from '$lib/stores'
 	import Icon from '@iconify/svelte'
 
 	export let player: Player & { progress: Progress }
+
+	const linkTypeColor = {
+		url: 'var(--primary)',
+		back: 'var(--error)'
+	}
 </script>
 
 <div class="player">
@@ -12,8 +18,10 @@
 		{#each player.progress.linkHistory as link}
 			<div
 				class="counter"
-				style="background-color: {link.type === 'url' ? 'var(--primary)' : 'var(--error)'};"
-				color="var(--bg)"
+				style="
+					background-color: {$game.route.includes(link.url) ? 'var(--secondary)' : linkTypeColor[link.type]};
+					color: var(--bg);
+				"
 			>
 				<Icon icon={link.type === 'url' ? 'akar-icons:arrow-right' : 'bi:arrow-90deg-left'} />
 			</div>
