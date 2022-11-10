@@ -1,4 +1,4 @@
-import{a2 as ar}from"./singletons-ed5c0aef.js";function Zc(t,e){for(var n=0;n<e.length;n++){const r=e[n];if(typeof r!="string"&&!Array.isArray(r)){for(const i in r)if(i!=="default"&&!(i in t)){const s=Object.getOwnPropertyDescriptor(r,i);s&&Object.defineProperty(t,i,s.get?s:{enumerable:!0,get:()=>r[i]})}}}return Object.freeze(Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}))}const Wp=ar({route:[],id:"",state:"waiting",players:[]}),zp=ar({}),Hp=ar(""),Gp=ar("");/**
+import{a2 as ar}from"./singletons-2be8b19c.js";function Zc(t,e){for(var n=0;n<e.length;n++){const r=e[n];if(typeof r!="string"&&!Array.isArray(r)){for(const i in r)if(i!=="default"&&!(i in t)){const s=Object.getOwnPropertyDescriptor(r,i);s&&Object.defineProperty(t,i,s.get?s:{enumerable:!0,get:()=>r[i]})}}}return Object.freeze(Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}))}const Wp=ar({route:[],id:"",state:"waiting",players:[]}),zp=ar({}),Hp=ar(""),Gp=ar("");/**
  * @license
  * Copyright 2017 Google LLC
  *
