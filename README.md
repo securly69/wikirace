@@ -1,3 +1,5 @@
+[Play Wikirace Now!](https://elijahstorm.github.io/wikirace/)
+
 Play for free with friends in this quick to pickup game.
 
 ### Known issues
