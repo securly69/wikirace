@@ -14,7 +14,6 @@ const config = {
 			precompress: false,
 			fallback: 'index.html'
 		}),
-		trailingSlash: 'always',
 		paths: {
 			base: dev ? '' : '/wikirace'
 		}
