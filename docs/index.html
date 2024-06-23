@@ -29,24 +29,35 @@
 			content="https://elijahstorm.github.io/wikirace/logo/logo_main.png"
 		/>
 
-		<link rel="icon" href="/favicon.png" />
+		<link rel="icon" href="/wikirace/favicon.png" />
 		<meta name="viewport" content="width=device-width" />
-		<meta http-equiv="content-security-policy" content="">
-		<link rel="modulepreload" href="/_app/immutable/start-dca146fd.js">
-		<link rel="modulepreload" href="/_app/immutable/chunks/singletons-f35c50ab.js">
-		<link rel="modulepreload" href="/_app/immutable/chunks/environment-60829b93.js">
+		
+		<link rel="modulepreload" href="/wikirace/_app/immutable/entry/start.FJ_pUa6G.js">
+		<link rel="modulepreload" href="/wikirace/_app/immutable/chunks/entry.Crc3OFkF.js">
+		<link rel="modulepreload" href="/wikirace/_app/immutable/chunks/scheduler.DuvC89Cg.js">
+		<link rel="modulepreload" href="/wikirace/_app/immutable/entry/app.CbdMFWKf.js">
+		<link rel="modulepreload" href="/wikirace/_app/immutable/chunks/index.Cr2bqvGs.js">
+		<link rel="modulepreload" href="/wikirace/_app/immutable/chunks/index.Bt-Xh7oU.js">
 	</head>
 	<body>
 		<div>
-		<script type="module" data-sveltekit-hydrate="45h">
-			import { start } from "/_app/immutable/start-dca146fd.js";
+			<script>
+				{
+					__sveltekit_q7pocx = {
+						base: "/wikirace",
+						assets: "/wikirace"
+					};
 
-			start({
-				env: {},
-				paths: {"base":"","assets":""},
-				target: document.querySelector('[data-sveltekit-hydrate="45h"]').parentNode,
-				version: "1686049865367"
-			});
-		</script></div>
+					const element = document.currentScript.parentElement;
+
+					Promise.all([
+						import("/wikirace/_app/immutable/entry/start.FJ_pUa6G.js"),
+						import("/wikirace/_app/immutable/entry/app.CbdMFWKf.js")
+					]).then(([kit, app]) => {
+						kit.start(app, element);
+					});
+				}
+			</script>
+		</div>
 	</body>
 </html>

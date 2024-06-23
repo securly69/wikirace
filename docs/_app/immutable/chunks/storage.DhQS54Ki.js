@@ -1,0 +1,3 @@
+import{i as x,j as g}from"./scheduler.DuvC89Cg.js";function I(t){const o=t-1;return o*o*o+1}function O(t,{delay:o=0,duration:a=400,easing:e=x}={}){const s=+getComputedStyle(t).opacity;return{delay:o,duration:a,easing:e,css:c=>`opacity: ${c*s}`}}function _(t,{delay:o=0,duration:a=400,easing:e=I,x:s=0,y:c=0,opacity:f=0}={}){const n=getComputedStyle(t),i=+n.opacity,m=n.transform==="none"?"":n.transform,u=i*(1-f),[y,p]=g(s),[S,d]=g(c);return{delay:o,duration:a,easing:e,css:(l,$)=>`
+			transform: ${m} translate(${(1-l)*y}${p}, ${(1-l)*S}${d});
+			opacity: ${i-u*$}`}}const r="wikiRaceMe",b=()=>JSON.parse(localStorage.getItem(r)??"{}"),v=()=>localStorage.removeItem(r),C=t=>localStorage.setItem(r,JSON.stringify(t));export{_ as a,C as b,I as c,O as f,b as g,v as r};
